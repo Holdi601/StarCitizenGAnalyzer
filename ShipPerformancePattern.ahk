@@ -80,7 +80,7 @@ TimeToOverheatOneDirection(key)
 	Send {LShift down}
 	Sleep 50
 	Send {%key% down}
-	Sleep 20000
+	Sleep 30000
 	Send {F4 down}
 	Sleep 50
 	Send {F4 up}

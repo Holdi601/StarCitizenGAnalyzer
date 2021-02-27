@@ -3,7 +3,6 @@ import cv2
 import ctypes
 import os
 import glob
-import pytesseract
 from videoprops import get_video_properties
 import re
 import platform
@@ -18,8 +17,7 @@ def GetYoungestVideoInFoler(path):
 	paths = [os.path.join(path, basename) for basename in files]
 	return max(paths, key=os.path.getctime)
 	
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-
+DataOutput = 'F:\\Dropbox\\Programmierung\\StarCitizenGAnalyzer\\DataOutput\\'
 VideoFilePath = 'Y:\\Records\\Squadron 42 - Star Citizen\\'
 LatestVideo = GetYoungestVideoInFoler(VideoFilePath)
 SpaceShip = 'Debug-Debug-Debug'
@@ -41,6 +39,10 @@ class Direction:
 		self.down=-1.0
 		self.left=-1.0
 		self.right=-1.0
+		
+	def toCsvString(self):
+		result=str(self.fwd)+","+str(self.aft)+","+str(self.left)+","+str(self.right)+","+str(self.up)+","+str(self.down)
+		return result
 
 class ShipResults:
 	def __init__(self):
@@ -51,6 +53,17 @@ class ShipResults:
 		self.HeatedBurnTime = Direction()
 		self.TestDate=""
 		self.Name=""
+		
+	def writeResults(self, path, append=True):
+		outputFile = None
+		completePath = path+"\\"+self.Name+".stats"
+		if append:
+			outputFile=open(completePath, "a")
+		else:
+			outputFile=open(completePath, "w")
+		resultLine=self.Name+","+self.TestDate+","+self.NormalAcceleration.toCsvString()+","+self.BurnerAcceleration.toCsvString()+","+self.BurnTime.toCsvString()+","+self.CoolTime.toCsvString()+","+self.HeatedBurnTime.toCsvString()+"\n"
+		outputFile.write(resultLine)
+		outputFile.close()
 
 def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 	dimensionToDealWith=0
@@ -78,6 +91,8 @@ cap= cv2.VideoCapture(LatestVideo)
 testStage = 0
 failuresInRow = 0
 succesesInRow = 0
+noAccsInRow = 0
+AccsInRow =0
 frameCounter = 0
 results = ShipResults()
 results.Name = SpaceShip
@@ -86,12 +101,17 @@ stats = {}
 currentFrame=0
 referenceFrame =-1
 referenceTestFrame = -1
+referenceStartAcc= -1
+referenceNoAcc = -1
 lastLegitFrame =-1
 lastFrameAbove =-1
 framesToCloseSection=55
 framesToStartSection=5
+framesToDeclareNoAcc=35
+framesToDeclareAcc=35
 CoolDownPeriodInSeconds=9
 CoolDownPeriodInFrames=(1000/TPF)*CoolDownPeriodInSeconds
+burnerStage=0
 
 def get_most_appearing_val(stats):
 	returnVal = -1.0
@@ -101,6 +121,51 @@ def get_most_appearing_val(stats):
 			appearances=stats[val]
 			returnVal=val
 	return returnVal
+
+def analyze_results_from_time(section, burnstage, frames):
+	if section==13:
+		if burnerStage==0:
+			results.BurnTime.fwd=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwd=frames*TPF
+		else:
+			results.HeatedBurnTime.fwd=frames*TPF
+	elif section==14:
+		if burnerStage==0:
+			results.BurnTime.aft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aft=frames*TPF
+		else:
+			results.HeatedBurnTime.aft=frames*TPF
+	elif section==15:
+		if burnerStage==0:
+			results.BurnTime.left=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.left=frames*TPF
+		else:
+			results.HeatedBurnTime.left=frames*TPF
+	elif section==16:
+		if burnerStage==0:
+			results.BurnTime.right=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.right=frames*TPF
+		else:
+			results.HeatedBurnTime.right=frames*TPF
+	elif section==17:
+		if burnerStage==0:
+			results.BurnTime.up=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.up=frames*TPF
+		else:
+			results.HeatedBurnTime.up=frames*TPF
+	elif section==18:
+		if burnerStage==0:
+			results.BurnTime.down=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.down=frames*TPF
+		else:
+			results.HeatedBurnTime.down=frames*TPF
+	print(str(section)+" "+ str(burnerStage) +" finished with " + str(frames*TPF))
 
 def analyze_results_from_section_acceleration(section, stats):
 	if section==0:
@@ -141,39 +206,34 @@ def analyze_results_from_section_acceleration(section, stats):
 	elif section==12:
 		results.BurnerAcceleration.down=get_most_appearing_val(stats)
 		print("Burner Acceleration Down max Acceleration G detected: "+str(results.BurnerAcceleration.down))
-	
-	
 
 def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
-    
-    if brightness != 0:
-        if brightness > 0:
-            shadow = brightness
-            highlight = 255
-        else:
-            shadow = 0
-            highlight = 255 + brightness
-        alpha_b = (highlight - shadow)/255
-        gamma_b = shadow
-        
-        buf = cv2.addWeighted(input_img, alpha_b, input_img, 0, gamma_b)
-    else:
-        buf = input_img.copy()
-    
-    if contrast != 0:
-        f = 131*(contrast + 127)/(127*(131-contrast))
-        alpha_c = f
-        gamma_c = 127*(1-f)
-        
-        buf = cv2.addWeighted(buf, alpha_c, buf, 0, gamma_c)
-
-    return buf
+	if brightness != 0:
+		if brightness > 0:
+			shadow = brightness
+			highlight = 255
+		else:
+			shadow = 0
+			highlight = 255 + brightness
+		alpha_b = (highlight - shadow)/255
+		gamma_b = shadow
+		buf = cv2.addWeighted(input_img, alpha_b, input_img, 0, gamma_b)
+	else:
+		buf = input_img.copy()
+	if contrast != 0:
+		f = 131*(contrast + 127)/(127*(131-contrast))
+		alpha_c = f
+		gamma_c = 127*(1-f)
+		buf = cv2.addWeighted(buf, alpha_c, buf, 0, gamma_c)
+	return buf
 closed=False
 rdr = Reader(['en'],gpu=True)
 
 while cap.isOpened():
 	currentFrame+=1
 	ret, frame = cap.read()
+	if frame is None:
+		break;
 	if currentFrame >0:
 		Gmeter= frame[gYpix:gYpix+gYoff, gXpix:gXpix+gXoff]
 		Gmeter=cv2.cvtColor(Gmeter, cv2.COLOR_BGR2GRAY)
@@ -196,6 +256,8 @@ while cap.isOpened():
 						break
 		if GreadOut<0:
 			failuresInRow+=1
+			noAccsInRow+=1
+			AccsInRow=0
 		else:
 			failuresInRow=0
 		if GreadOut>=0.0:
@@ -203,10 +265,17 @@ while cap.isOpened():
 			lastLegitFrame=currentFrame
 			if GreadOut>0.0:
 				lastFrameAbove=currentFrame
+				noAccsInRow=0
+				AccsInRow+=1
+				if referenceStartAcc <0:
+					referenceStartAcc=currentFrame
 				if GreadOut in stats:
 					stats[GreadOut]+=1
 				else:
 					stats[GreadOut]=1
+			else:
+				noAccsInRow+=1
+				AccsInRow=0
 		elif failuresInRow==framesToCloseSection:
 			succesesInRow=0
 			print(str(testStage) + ' Section Closed Section Duration in Frames: '+ str(lastLegitFrame-referenceFrame))
@@ -214,19 +283,45 @@ while cap.isOpened():
 			if testStage<13:
 				analyze_results_from_section_acceleration(testStage, stats)
 			else:
-				framesToCloseSection=CoolDownPeriodInFrames
+				framesToCloseSection=int(CoolDownPeriodInFrames)
 			stats={}
 			closed=True
+			referenceStartAcc=-1
+			burnerStage=0
+			noAccsInRow=0
+			AccsInRow=0
+			referenceStartAcc=-1
+			referenceNoAcc=-1
 		if succesesInRow==framesToStartSection and closed:
 			print('Section Started')
 			closed=False
 			referenceFrame=currentFrame-(framesToStartSection-1)
 			testStage+=1
+		if noAccsInRow== framesToDeclareNoAcc and testStage>12 and referenceStartAcc>=0 and burnerStage==0:
+			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
+			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
+			referenceStartAcc=-1
+			burnerStage+=1
+			referenceNoAcc=currentFrame-framesToDeclareNoAcc
+			succesesInRow=-1
+		elif burnerStage==1 and  referenceNoAcc>0 and testStage>12 and AccsInRow==framesToDeclareAcc:
+			framesOfCD=currentFrame-framesToDeclareAcc-referenceNoAcc
+			analyze_results_from_time(testStage, burnerStage, framesOfCD)
+			burnerStage+=1
+			referenceNoAcc=-1
+			referenceStartAcc=currentFrame-framesToDeclareAcc
+		elif burnerStage==2 and referenceStartAcc>0 and testStage>12 and noAccsInRow== framesToDeclareNoAcc:
+			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
+			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
+			burnerStage+=1
+			print("Done in direction, waiting for external view")
 		cv2.imshow('SCAnalyze', Gmeter)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 
 cap.release()
 cv2.destroyAllWindows
-print(stats)
+
+results.writeResults(DataOutput)
+print("Done")
 
