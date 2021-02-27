@@ -50,6 +50,21 @@ class Direction:
 	def toCsvString(self):
 		result=str(self.fwd)+","+str(self.aft)+","+str(self.left)+","+str(self.right)+","+str(self.up)+","+str(self.down)
 		return result
+
+def dts(dict):
+		result=""
+		for key in dict:
+			result=result+";"+str(key)+";"+str(dict[key])
+		return result[1:]
+		
+class BurnTimeGraph:
+	def __init__(self):
+		self.fwd=[]
+		self.aft=[]
+		self.up=[]
+		self.down=[]
+		self.left=[]
+		self.right=[]
 		
 class BurnTimeDirection:
 	def __init__(self):
@@ -60,34 +75,34 @@ class BurnTimeDirection:
 		self.left={}
 		self.right={}
 		
-	def dts(dict):
-		result=""
-		for key in dict:
-			result=result+";"+str(key)+";"+str(dict[key])
-		return result[1:]
-		
+	
 	def toCsvString(self):
 		result=dts(self.fwd)+","+dts(self.aft)+","+dts(self.left)+","+dts(self.right)+","+dts(self.up)+","+dts(self.down)
 		return result
-			
 
 class ShipResults:
 	def __init__(self):
 		self.NormalAcceleration= Direction()
 		self.BurnerAcceleration= Direction()
-		self.BurnTime = BurnTimeDirection()
+		self.BurnTime = Direction()
 		self.CoolTime = Direction()
-		self.HeatedBurnTime = BurnTimeDirection()
+		self.HeatedBurnTime = Direction()
+		self.TimeGraph = BurnTimeGraph()
+		
 		self.TestDate=""
 		self.Name=""
 		
 	def writeResults(self, path, append=True):
 		outputFile = None
-		completePath = path+"\\"+self.Name+".stats"
+		completePath = path+"\\"+self.Name+"_overview"+".stats"
+		outputFileTL = None
+		completePathTL = path+"\\"+self.Name+"_timeLine"+".stats"
 		if append:
 			outputFile=open(completePath, "a")
+			outputFileTL=open(completePathTL, "a")
 		else:
 			outputFile=open(completePath, "w")
+			outputFileTL=open(completePathTL, "w")
 		Manufacteur=""
 		Model=""
 		Comment=""
@@ -101,6 +116,27 @@ class ShipResults:
 		resultLine=Manufacteur+","+Model+","+Comment+","+self.TestDate+","+self.NormalAcceleration.toCsvString()+","+self.BurnerAcceleration.toCsvString()+","+self.BurnTime.toCsvString()+","+self.CoolTime.toCsvString()+","+self.HeatedBurnTime.toCsvString()+"\n"
 		outputFile.write(resultLine)
 		outputFile.close()
+		startPart=Manufacteur+","+Model+","+Comment+","+self.TestDate
+		for i in range(0, len(self.TimeGraph.fwd)):
+			lineToWrite=startPart+",fwd,"+str(i+1)+","+str(self.TimeGraph.fwd[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aft)):
+			lineToWrite=startPart+",aft,"+str(i+1)+","+str(self.TimeGraph.aft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.left)):
+			lineToWrite=startPart+",left,"+str(i+1)+","+str(self.TimeGraph.left[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.right)):
+			lineToWrite=startPart+",right,"+str(i+1)+","+str(self.TimeGraph.right[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.up)):
+			lineToWrite=startPart+",up,"+str(i+1)+","+str(self.TimeGraph.up[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.down)):
+			lineToWrite=startPart+",down,"+str(i+1)+","+str(self.TimeGraph.down[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		outputFileTL.close()
+
 
 def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 	dimensionToDealWith=0
@@ -116,7 +152,7 @@ def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 		return int(float(dimensionToDealWith)*float(Percentage/100.0))
 
 gYper = 16
-YwidPer = 50
+YwidPer = 45
 gYpix = HalfHeight+TranslatePercentageOffCenterToPixel(gYper,'h')
 gYoff = TranslatePercentageOffCenterToPixel(YwidPer,'h')
 gXper = 50
@@ -150,6 +186,7 @@ CoolDownPeriodInSeconds=9
 CoolDownPeriodInFrames=(1000/TPF)*CoolDownPeriodInSeconds
 burnerStage=0
 accelerationToBeAbove=0.0
+TimeLine=[]
 
 def get_most_appearing_val(stats):
 	returnVal = -1.0
@@ -160,61 +197,69 @@ def get_most_appearing_val(stats):
 			returnVal=val
 	return returnVal
 	
-def traverseStatsIntoMs(stats):
-	for key in stats:
-		val1 = stats[key]*TPF
-		stats[key]=val1
-	return stats
+def analyze_graph(section, graph):
+	if section==13:
+		results.TimeGraph.fwd = graph
+	if section==14:
+		results.TimeGraph.aft = graph
+	if section==15:
+		results.TimeGraph.left = graph
+	if section==16:
+		results.TimeGraph.right = graph
+	if section==17:
+		results.TimeGraph.up = graph
+	if section==18:
+		results.TimeGraph.down = graph
 	
 
-def analyze_results_from_time(section, burnstage, frames, stats={}):
+def analyze_results_from_time(section, burnstage, frames):
 	if section==13:
 		if burnerStage==0:
-			results.BurnTime.fwd=traverseStatsIntoMs(stats)
+			results.BurnTime.fwd=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.fwd=frames*TPF
 		else:
-			results.HeatedBurnTime.fwd=traverseStatsIntoMs(stats)
+			results.HeatedBurnTime.fwd=frames*TPF
 			accelerationToBeAbove=results.NormalAcceleration.aft-0.1
 	elif section==14:
 		if burnerStage==0:
-			results.BurnTime.aft=traverseStatsIntoMs(stats)
+			results.BurnTime.aft=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.aft=frames*TPF
 		else:
-			results.HeatedBurnTime.aft=traverseStatsIntoMs(stats)
+			results.HeatedBurnTime.aft=frames*TPF
 			accelerationToBeAbove=results.NormalAcceleration.left-0.1
 	elif section==15:
 		if burnerStage==0:
-			results.BurnTime.left=traverseStatsIntoMs(stats)
+			results.BurnTime.left=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.left=frames*TPF
 		else:
-			results.HeatedBurnTime.left=traverseStatsIntoMs(stats)
+			results.HeatedBurnTime.left=frames*TPF
 			accelerationToBeAbove=results.NormalAcceleration.right-0.1
 	elif section==16:
 		if burnerStage==0:
-			results.BurnTime.right=traverseStatsIntoMs(stats)
+			results.BurnTime.right=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.right=frames*TPF
 		else:
-			results.HeatedBurnTime.right=traverseStatsIntoMs(stats)
+			results.HeatedBurnTime.right=frames*TPF
 			accelerationToBeAbove=results.NormalAcceleration.up-0.1
 	elif section==17:
 		if burnerStage==0:
-			results.BurnTime.up=traverseStatsIntoMs(stats)
+			results.BurnTime.up=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.up=frames*TPF
 		else:
-			results.HeatedBurnTime.up=traverseStatsIntoMs(stats)
+			results.HeatedBurnTime.up=frames*TPF
 			accelerationToBeAbove=results.NormalAcceleration.down-0.1
 	elif section==18:
 		if burnerStage==0:
-			results.BurnTime.down=traverseStatsIntoMs(stats)
+			results.BurnTime.down=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.down=frames*TPF
 		else:
-			results.HeatedBurnTime.down=traverseStatsIntoMs(stats)
+			results.HeatedBurnTime.down=frames*TPF
 	print(str(section)+" "+ str(burnerStage) +" finished with " + str(frames*TPF))
 
 def analyze_results_from_section_acceleration(section, stats):
@@ -281,6 +326,7 @@ closed=False
 rdr = Reader(['en'],gpu=True)
 previousAcc=[]
 GreadsToSave=60
+burnerActive=False
 while cap.isOpened():
 	currentFrame+=1
 	ret, frame = cap.read()
@@ -315,19 +361,21 @@ while cap.isOpened():
 		if GreadOut>=0.0:
 			succesesInRow+=1
 			lastLegitFrame=currentFrame
+			previousAcc.insert(0, GreadOut)
+			if len(previousAcc)>GreadsToSave:
+				previousAcc.pop(GreadsToSave)
 			if GreadOut>0.0:
-				previousAcc.insert(0, GreadOut)
-				if len(previousAcc)>GreadsToSave:
-					previousAcc.pop(GreadsToSave)
 				lastFrameAbove=currentFrame
 				noAccsInRow=0
 				AccsInRow+=1
 				if referenceStartAcc <0:
 					referenceStartAcc=currentFrame
+					if testStage>12 and not burnerActive:
+						burnerActive=True
 				if GreadOut in stats:
 					stats[GreadOut]+=1
 				else:
-					stats[GreadOut]=1
+					stats[GreadOut]=1					
 			else:
 				noAccsInRow+=1
 				AccsInRow=0
@@ -341,20 +389,27 @@ while cap.isOpened():
 				framesToCloseSection=int(CoolDownPeriodInFrames)
 			stats={}
 			closed=True
-			referenceStartAcc=-1
-			burnerStage=0
-			noAccsInRow=0
-			AccsInRow=0
-			referenceStartAcc=-1
-			referenceNoAcc=-1
+			TimeLine=[]
+		if testStage>12 and burnerActive:
+			if GreadOut>=0:
+				TimeLine.append(GreadOut)
+			else:
+				TimeLine.append(previousAcc[0])
 		if succesesInRow==framesToStartSection and closed:
 			print('Section Started')
 			closed=False
 			referenceFrame=currentFrame-(framesToStartSection-1)
 			testStage+=1
+			burnerStage=0
+			referenceStartAcc=-1
+			noAccsInRow=0
+			AccsInRow=0
+			referenceStartAcc=-1
+			referenceNoAcc=-1
+				
 		if noAccsInRow== framesToDeclareNoAcc and testStage>12 and referenceStartAcc>=0 and burnerStage==0:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
-			analyze_results_from_time(testStage, burnerStage, framesOfAcc, stats)
+			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 			referenceStartAcc=-1
 			burnerStage+=1
 			referenceNoAcc=currentFrame-framesToDeclareNoAcc
@@ -369,9 +424,11 @@ while cap.isOpened():
 			stats={}
 		elif burnerStage==2 and referenceStartAcc>0 and testStage>12 and noAccsInRow== framesToDeclareNoAcc:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
-			analyze_results_from_time(testStage, burnerStage, framesOfAcc, stats)
+			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
+			analyze_graph(testStage, TimeLine)
 			burnerStage+=1
 			stats={}
+			TimeLine=[]
 			print("Done in direction, waiting for external view")
 		cv2.imshow('SCAnalyze', Gmeter)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
