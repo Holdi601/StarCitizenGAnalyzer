@@ -17,12 +17,19 @@ def GetYoungestVideoInFoler(path):
 	paths = [os.path.join(path, basename) for basename in files]
 	return max(paths, key=os.path.getctime)
 	
-DataOutput = 'F:\\Dropbox\\Programmierung\\StarCitizenGAnalyzer\\DataOutput\\'
+pathParts = sys.argv[0].split('\\') #Windows if you want it for linux do it yourself :P
+DataOutput= pathParts[0]
+for i in range(1,len(pathParts)-1):
+	DataOutput=DataOutput+'\\'+pathParts[i]
+DataOutput = DataOutput+'\\DataOutput\\'
+if not os.path.exists(DataOutput):
+	os.makedirs(DataOutput) 
 VideoFilePath = 'Y:\\Records\\Squadron 42 - Star Citizen\\'
 LatestVideo = GetYoungestVideoInFoler(VideoFilePath)
 SpaceShip = 'Debug-Debug-Debug'
 if len(sys.argv)>1:
 	SpaceShip=sys.argv[1]
+SpaceShip =  SpaceShip.replace(',','')
 videoProperties= get_video_properties(LatestVideo)
 HalfHeight = int(videoProperties['height']/2)
 HalfWidth = int(videoProperties['width']/2)
@@ -61,7 +68,17 @@ class ShipResults:
 			outputFile=open(completePath, "a")
 		else:
 			outputFile=open(completePath, "w")
-		resultLine=self.Name+","+self.TestDate+","+self.NormalAcceleration.toCsvString()+","+self.BurnerAcceleration.toCsvString()+","+self.BurnTime.toCsvString()+","+self.CoolTime.toCsvString()+","+self.HeatedBurnTime.toCsvString()+"\n"
+		Manufacteur=""
+		Model=""
+		Comment=""
+		parts = self.Name.split('-')
+		if len(parts)>0:
+			Manufacteur=parts[0]
+			if len(parts)>1:
+				Model=parts[1]
+				if len(parts)>2:
+					Comment=parts[2]
+		resultLine=Manufacteur+","+Model+","+Comment+","+self.TestDate+","+self.NormalAcceleration.toCsvString()+","+self.BurnerAcceleration.toCsvString()+","+self.BurnTime.toCsvString()+","+self.CoolTime.toCsvString()+","+self.HeatedBurnTime.toCsvString()+"\n"
 		outputFile.write(resultLine)
 		outputFile.close()
 
