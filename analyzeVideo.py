@@ -388,9 +388,12 @@ while cap.isOpened():
 				analyze_results_from_section_acceleration(testStage, stats)
 			else:
 				framesToCloseSection=int(CoolDownPeriodInFrames)
+				if burnerStage < 3:
+					framesOfAcc = currentFrame-framesToCloseSection-referenceStartAcc
+					analyze_results_from_time(testStage, burnerStage, framesOfAcc)
+					analyze_graph(testStage, TimeLine)
 			stats={}
 			closed=True
-			TimeLine=[]
 			if testStage==18:
 				break
 		if testStage>12 and burnerActive:
@@ -400,6 +403,9 @@ while cap.isOpened():
 				TimeLine.append(previousAcc[0])
 		if succesesInRow==framesToStartSection and closed:
 			print('Section Started')
+			TimeLine=[]
+			for i in range(0, framesToStartSection):
+				TimeLine.insert(0, previousAcc[i])
 			closed=False
 			referenceFrame=currentFrame-(framesToStartSection-1)
 			testStage+=1
@@ -410,8 +416,7 @@ while cap.isOpened():
 			AccsInRow=0
 			referenceStartAcc=-1
 			referenceNoAcc=-1
-			stats={}
-				
+			stats={}	
 		if noAccsInRow== framesToDeclareNoAcc and testStage>12 and referenceStartAcc>=0 and burnerStage==0:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
 			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
