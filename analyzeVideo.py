@@ -50,14 +50,34 @@ class Direction:
 	def toCsvString(self):
 		result=str(self.fwd)+","+str(self.aft)+","+str(self.left)+","+str(self.right)+","+str(self.up)+","+str(self.down)
 		return result
+		
+class BurnTimeDirection:
+	def __init__(self):
+		self.fwd={}
+		self.aft={}
+		self.up={}
+		self.down={}
+		self.left={}
+		self.right={}
+		
+	def dts(dict):
+		result=""
+		for key in dict:
+			result=result+";"+str(key)+";"+str(dict[key])
+		return result[1:]
+		
+	def toCsvString(self):
+		result=dts(self.fwd)+","+dts(self.aft)+","+dts(self.left)+","+dts(self.right)+","+dts(self.up)+","+dts(self.down)
+		return result
+			
 
 class ShipResults:
 	def __init__(self):
 		self.NormalAcceleration= Direction()
 		self.BurnerAcceleration= Direction()
-		self.BurnTime = Direction()
+		self.BurnTime = BurnTimeDirection()
 		self.CoolTime = Direction()
-		self.HeatedBurnTime = Direction()
+		self.HeatedBurnTime = BurnTimeDirection()
 		self.TestDate=""
 		self.Name=""
 		
@@ -96,7 +116,7 @@ def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 		return int(float(dimensionToDealWith)*float(Percentage/100.0))
 
 gYper = 16
-YwidPer = 15
+YwidPer = 50
 gYpix = HalfHeight+TranslatePercentageOffCenterToPixel(gYper,'h')
 gYoff = TranslatePercentageOffCenterToPixel(YwidPer,'h')
 gXper = 50
@@ -129,6 +149,7 @@ framesToDeclareAcc=35
 CoolDownPeriodInSeconds=9
 CoolDownPeriodInFrames=(1000/TPF)*CoolDownPeriodInSeconds
 burnerStage=0
+accelerationToBeAbove=0.0
 
 def get_most_appearing_val(stats):
 	returnVal = -1.0
@@ -138,50 +159,62 @@ def get_most_appearing_val(stats):
 			appearances=stats[val]
 			returnVal=val
 	return returnVal
+	
+def traverseStatsIntoMs(stats):
+	for key in stats:
+		val1 = stats[key]*TPF
+		stats[key]=val1
+	return stats
+	
 
-def analyze_results_from_time(section, burnstage, frames):
+def analyze_results_from_time(section, burnstage, frames, stats={}):
 	if section==13:
 		if burnerStage==0:
-			results.BurnTime.fwd=frames*TPF
+			results.BurnTime.fwd=traverseStatsIntoMs(stats)
 		elif burnerStage==1:
 			results.CoolTime.fwd=frames*TPF
 		else:
-			results.HeatedBurnTime.fwd=frames*TPF
+			results.HeatedBurnTime.fwd=traverseStatsIntoMs(stats)
+			accelerationToBeAbove=results.NormalAcceleration.aft-0.1
 	elif section==14:
 		if burnerStage==0:
-			results.BurnTime.aft=frames*TPF
+			results.BurnTime.aft=traverseStatsIntoMs(stats)
 		elif burnerStage==1:
 			results.CoolTime.aft=frames*TPF
 		else:
-			results.HeatedBurnTime.aft=frames*TPF
+			results.HeatedBurnTime.aft=traverseStatsIntoMs(stats)
+			accelerationToBeAbove=results.NormalAcceleration.left-0.1
 	elif section==15:
 		if burnerStage==0:
-			results.BurnTime.left=frames*TPF
+			results.BurnTime.left=traverseStatsIntoMs(stats)
 		elif burnerStage==1:
 			results.CoolTime.left=frames*TPF
 		else:
-			results.HeatedBurnTime.left=frames*TPF
+			results.HeatedBurnTime.left=traverseStatsIntoMs(stats)
+			accelerationToBeAbove=results.NormalAcceleration.right-0.1
 	elif section==16:
 		if burnerStage==0:
-			results.BurnTime.right=frames*TPF
+			results.BurnTime.right=traverseStatsIntoMs(stats)
 		elif burnerStage==1:
 			results.CoolTime.right=frames*TPF
 		else:
-			results.HeatedBurnTime.right=frames*TPF
+			results.HeatedBurnTime.right=traverseStatsIntoMs(stats)
+			accelerationToBeAbove=results.NormalAcceleration.up-0.1
 	elif section==17:
 		if burnerStage==0:
-			results.BurnTime.up=frames*TPF
+			results.BurnTime.up=traverseStatsIntoMs(stats)
 		elif burnerStage==1:
 			results.CoolTime.up=frames*TPF
 		else:
-			results.HeatedBurnTime.up=frames*TPF
+			results.HeatedBurnTime.up=traverseStatsIntoMs(stats)
+			accelerationToBeAbove=results.NormalAcceleration.down-0.1
 	elif section==18:
 		if burnerStage==0:
-			results.BurnTime.down=frames*TPF
+			results.BurnTime.down=traverseStatsIntoMs(stats)
 		elif burnerStage==1:
 			results.CoolTime.down=frames*TPF
 		else:
-			results.HeatedBurnTime.down=frames*TPF
+			results.HeatedBurnTime.down=traverseStatsIntoMs(stats)
 	print(str(section)+" "+ str(burnerStage) +" finished with " + str(frames*TPF))
 
 def analyze_results_from_section_acceleration(section, stats):
@@ -222,6 +255,7 @@ def analyze_results_from_section_acceleration(section, stats):
 		print("Burner Acceleration Up max Acceleration G detected: "+str(results.BurnerAcceleration.up))
 	elif section==12:
 		results.BurnerAcceleration.down=get_most_appearing_val(stats)
+		accelerationToBeAbove=results.NormalAcceleration.fwd-0.1
 		print("Burner Acceleration Down max Acceleration G detected: "+str(results.BurnerAcceleration.down))
 
 def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
@@ -245,7 +279,8 @@ def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
 	return buf
 closed=False
 rdr = Reader(['en'],gpu=True)
-
+previousAcc=[]
+GreadsToSave=60
 while cap.isOpened():
 	currentFrame+=1
 	ret, frame = cap.read()
@@ -281,6 +316,9 @@ while cap.isOpened():
 			succesesInRow+=1
 			lastLegitFrame=currentFrame
 			if GreadOut>0.0:
+				previousAcc.insert(0, GreadOut)
+				if len(previousAcc)>GreadsToSave:
+					previousAcc.pop(GreadsToSave)
 				lastFrameAbove=currentFrame
 				noAccsInRow=0
 				AccsInRow+=1
@@ -316,21 +354,24 @@ while cap.isOpened():
 			testStage+=1
 		if noAccsInRow== framesToDeclareNoAcc and testStage>12 and referenceStartAcc>=0 and burnerStage==0:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
-			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
+			analyze_results_from_time(testStage, burnerStage, framesOfAcc, stats)
 			referenceStartAcc=-1
 			burnerStage+=1
 			referenceNoAcc=currentFrame-framesToDeclareNoAcc
 			succesesInRow=-1
+			stats={}
 		elif burnerStage==1 and  referenceNoAcc>0 and testStage>12 and AccsInRow==framesToDeclareAcc:
 			framesOfCD=currentFrame-framesToDeclareAcc-referenceNoAcc
 			analyze_results_from_time(testStage, burnerStage, framesOfCD)
 			burnerStage+=1
 			referenceNoAcc=-1
 			referenceStartAcc=currentFrame-framesToDeclareAcc
+			stats={}
 		elif burnerStage==2 and referenceStartAcc>0 and testStage>12 and noAccsInRow== framesToDeclareNoAcc:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
-			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
+			analyze_results_from_time(testStage, burnerStage, framesOfAcc, stats)
 			burnerStage+=1
+			stats={}
 			print("Done in direction, waiting for external view")
 		cv2.imshow('SCAnalyze', Gmeter)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
