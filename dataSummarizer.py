@@ -11,22 +11,32 @@ print(DataPath)
 if not os.path.exists(DataPath):
 	os.makedirs(DataPath) 
 SummaryPath = DataPath+ "Summary\\"
-fileName="summary.csv"
+fileName="summary_overview.csv"
 fileWrite=None
+
+tlfileName="summary_timeline.csv"
+tlWrite=None
 
 if not os.path.exists(SummaryPath):
 	os.makedirs(SummaryPath)
 
 if AppendSummary:
 	fileWrite=open(SummaryPath+fileName, "a")
+	tlWrite=open(SummaryPath+tlfileName, "a")
 else:
 	fileWrite=open(SummaryPath+fileName, "w")
-
+	tlWrite=open(SummaryPath+tlfileName, "w")
 
 for file in os.listdir(DataPath):
-	if file.endswith(".stats"):
+	if file.endswith("_overview.stats"):
 		fileReader = open(os.path.join(DataPath, file),"r")
 		fileWrite.write(fileReader.read())
 		fileReader.close()
-
 fileWrite.close()
+
+for file in os.listdir(DataPath):
+	if file.endswith("_timeLine.stats"):
+		fileReader = open(os.path.join(DataPath, file),"r")
+		tlWrite.write(fileReader.read())
+		fileReader.close()
+tlWrite.close()

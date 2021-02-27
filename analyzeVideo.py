@@ -152,7 +152,7 @@ def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 		return int(float(dimensionToDealWith)*float(Percentage/100.0))
 
 gYper = 16
-YwidPer = 45
+YwidPer = 47
 gYpix = HalfHeight+TranslatePercentageOffCenterToPixel(gYper,'h')
 gYoff = TranslatePercentageOffCenterToPixel(YwidPer,'h')
 gXper = 50
@@ -179,7 +179,7 @@ referenceNoAcc = -1
 lastLegitFrame =-1
 lastFrameAbove =-1
 framesToCloseSection=55
-framesToStartSection=5
+framesToStartSection=15
 framesToDeclareNoAcc=35
 framesToDeclareAcc=35
 CoolDownPeriodInSeconds=9
@@ -323,6 +323,7 @@ def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
 		buf = cv2.addWeighted(buf, alpha_c, buf, 0, gamma_c)
 	return buf
 closed=False
+started=False
 rdr = Reader(['en'],gpu=True)
 previousAcc=[]
 GreadsToSave=60
@@ -346,10 +347,10 @@ while cap.isOpened():
 		if len(txresults)>0:
 			for elements in txresults:
 				if len(elements)>1:
-					textFound=elements[1]
-					match = re.search("(\d|[o]|[O]|[g])*(\d|[o]|[O]|[g])[.](\d|[o]|[O]|[g])", textFound)
+					textFound=elements[1]						
+					match = re.search("(\d|[o]|[O]|[g]|[s]|[S])*(\d|[o]|[O]|[g]|[s]|[S])[.](\d|[o]|[O]|[g]|[s]|[S])", textFound)
 					if match:
-						strToUse = match[0].replace('o','0').replace('O','0').replace('g','9')
+						strToUse = match[0].replace('o','0').replace('O','0').replace('g','9').replace('s','5').replace('S','5')
 						GreadOut=float(strToUse)
 						break
 		if GreadOut<0:
@@ -379,7 +380,7 @@ while cap.isOpened():
 			else:
 				noAccsInRow+=1
 				AccsInRow=0
-		elif failuresInRow==framesToCloseSection:
+		elif failuresInRow==framesToCloseSection and not closed:
 			succesesInRow=0
 			print(str(testStage) + ' Section Closed Section Duration in Frames: '+ str(lastLegitFrame-referenceFrame))
 			print(stats)
@@ -390,6 +391,8 @@ while cap.isOpened():
 			stats={}
 			closed=True
 			TimeLine=[]
+			if testStage==18:
+				break
 		if testStage>12 and burnerActive:
 			if GreadOut>=0:
 				TimeLine.append(GreadOut)
@@ -402,10 +405,12 @@ while cap.isOpened():
 			testStage+=1
 			burnerStage=0
 			referenceStartAcc=-1
+			burnerActive=True
 			noAccsInRow=0
 			AccsInRow=0
 			referenceStartAcc=-1
 			referenceNoAcc=-1
+			stats={}
 				
 		if noAccsInRow== framesToDeclareNoAcc and testStage>12 and referenceStartAcc>=0 and burnerStage==0:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
@@ -429,7 +434,10 @@ while cap.isOpened():
 			burnerStage+=1
 			stats={}
 			TimeLine=[]
+			burnerActive=False
 			print("Done in direction, waiting for external view")
+		if testStage==18 and burnerStage==3:
+			break
 		cv2.imshow('SCAnalyze', Gmeter)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
