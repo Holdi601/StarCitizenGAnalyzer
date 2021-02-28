@@ -162,7 +162,7 @@ gXpix = HalfWidth-TranslatePercentageOffCenterToPixel(gXper,'w')
 gXoff = gXpix+TranslatePercentageOffCenterToPixel(XwidPer,'w')
 
 cap= cv2.VideoCapture(LatestVideo)
-testStage = 0
+testStage = 1
 failuresInRow = 0
 succesesInRow = 0
 noAccsInRow = 0
@@ -181,8 +181,8 @@ lastLegitFrame =-1
 lastFrameAbove =-1
 framesToCloseSection=55
 framesToStartSection=15
-framesToDeclareNoAcc=35
-framesToDeclareAcc=35
+framesToDeclareNoAcc=6
+framesToDeclareAcc=6
 CoolDownPeriodInSeconds=9
 CoolDownPeriodInFrames=(1000/TPF)*CoolDownPeriodInSeconds
 burnerStage=0
@@ -359,9 +359,9 @@ while cap.isOpened():
 				if len(elements)>1:
 					textFound=elements[1]
 					if currentFrame>TrackerFrame:
-						match = re.search("(\d|[o]|[O]|[g]|[s]|[S])*(\d|[o]|[O]|[g]|[s]|[S])[.](\d|[o]|[O]|[g]|[s]|[S])", textFound)
+						match = re.search("(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])*(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])[.](\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])", textFound)
 						if match:
-							strToUse = match[0].replace('o','0').replace('O','0').replace('g','9').replace('s','5').replace('S','5')
+							strToUse = match[0].replace('o','0').replace('O','0').replace('g','9').replace('s','5').replace('S','5').replace('i','1').replace('I','1').replace('l','1')
 							GreadOut=float(strToUse)
 							break
 					if currentFrame >= TrackerFrame - FramesToScanTarget and currentFrame< TrackerFrame-1:
@@ -372,7 +372,7 @@ while cap.isOpened():
 						xMed= statistics.median(xTracker)
 						yMed= statistics.median(yTracker)
 						gXpix = xMed - TranslatePercentageOffCenterToPixel(18, "w")
-						gXoff = gXpix + TranslatePercentageOffCenterToPixel(15, "w")
+						gXoff = gXpix + TranslatePercentageOffCenterToPixel(17, "w")
 						gYpix = yMed - TranslatePercentageOffCenterToPixel(17, "h")
 						gYoff = gYpix + TranslatePercentageOffCenterToPixel(35, "h")
 		if GreadOut<0:
@@ -393,6 +393,7 @@ while cap.isOpened():
 				AccsInRow+=1
 				if referenceStartAcc <0:
 					referenceStartAcc=currentFrame
+					print("Acceleration started")
 					if testStage>12 and not burnerActive:
 						burnerActive=True
 				if GreadOut in stats:
