@@ -182,7 +182,7 @@ lastFrameAbove =-1
 framesToCloseSection=55
 framesToStartSection=15
 framesToDeclareNoAcc=6
-framesToDeclareAcc=6
+framesToDeclareAcc=12
 CoolDownPeriodInSeconds=9
 CoolDownPeriodInFrames=(1000/TPF)*CoolDownPeriodInSeconds
 burnerStage=0
@@ -371,10 +371,10 @@ while cap.isOpened():
 					elif currentFrame == TrackerFrame-1:
 						xMed= statistics.median(xTracker)
 						yMed= statistics.median(yTracker)
-						gXpix = xMed - TranslatePercentageOffCenterToPixel(18, "w")
-						gXoff = gXpix + TranslatePercentageOffCenterToPixel(17, "w")
-						gYpix = yMed - TranslatePercentageOffCenterToPixel(17, "h")
-						gYoff = gYpix + TranslatePercentageOffCenterToPixel(35, "h")
+						gXpix = int(xMed - TranslatePercentageOffCenterToPixel(18, "w"))
+						gXoff = int(gXpix + TranslatePercentageOffCenterToPixel(17, "w"))
+						gYpix = int(yMed - TranslatePercentageOffCenterToPixel(17, "h"))
+						gYoff = int(gYpix + TranslatePercentageOffCenterToPixel(35, "h"))
 		if GreadOut<0:
 			failuresInRow+=1
 			noAccsInRow+=1
@@ -407,15 +407,19 @@ while cap.isOpened():
 			succesesInRow=0
 			print(str(testStage) + ' Section Closed Section Duration in Frames: '+ str(lastLegitFrame-referenceFrame))
 			print(stats)
+			if testStage==1 and len(stats)==0:
+				testStage=0
 			if testStage<13:
 				analyze_results_from_section_acceleration(testStage, stats)
 			else:
 				framesToCloseSection=int(CoolDownPeriodInFrames)
+				analyze_graph(testStage, TimeLine)
 				if burnerStage < 3:
 					framesOfAcc = currentFrame-framesToCloseSection-referenceStartAcc
 					analyze_results_from_time(testStage, burnerStage, framesOfAcc)
-					analyze_graph(testStage, TimeLine)
 			stats={}
+			burnerActive=False
+			TimeLine=[]
 			closed=True
 			if testStage==18:
 				break
@@ -447,21 +451,17 @@ while cap.isOpened():
 			burnerStage+=1
 			referenceNoAcc=currentFrame-framesToDeclareNoAcc
 			succesesInRow=-1
-			stats={}
 		elif burnerStage==1 and  referenceNoAcc>0 and testStage>12 and AccsInRow==framesToDeclareAcc:
 			framesOfCD=currentFrame-framesToDeclareAcc-referenceNoAcc
 			analyze_results_from_time(testStage, burnerStage, framesOfCD)
 			burnerStage+=1
 			referenceNoAcc=-1
 			referenceStartAcc=currentFrame-framesToDeclareAcc
-			stats={}
 		elif burnerStage==2 and referenceStartAcc>0 and testStage>12 and noAccsInRow== framesToDeclareNoAcc:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
 			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 			analyze_graph(testStage, TimeLine)
 			burnerStage+=1
-			stats={}
-			TimeLine=[]
 			burnerActive=False
 			print("Done in direction, waiting for external view")
 		if testStage==18 and burnerStage==3:
