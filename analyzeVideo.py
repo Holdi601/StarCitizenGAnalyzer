@@ -8,6 +8,7 @@ import re
 import platform
 from datetime import datetime
 from easyocr import Reader
+import statistics
 
 def Mbox(title, text, style):
 	return ctypes.windll.user32.MessageBoxW(0, text, title, style)
@@ -154,11 +155,11 @@ def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 gYper = 16
 YwidPer = 47
 gYpix = HalfHeight+TranslatePercentageOffCenterToPixel(gYper,'h')
-gYoff = TranslatePercentageOffCenterToPixel(YwidPer,'h')
+gYoff = gYpix+TranslatePercentageOffCenterToPixel(YwidPer,'h')
 gXper = 50
-XwidPer = 20
+XwidPer = 28
 gXpix = HalfWidth-TranslatePercentageOffCenterToPixel(gXper,'w')
-gXoff = TranslatePercentageOffCenterToPixel(XwidPer,'w')
+gXoff = gXpix+TranslatePercentageOffCenterToPixel(XwidPer,'w')
 
 cap= cv2.VideoCapture(LatestVideo)
 testStage = 0
@@ -328,13 +329,22 @@ rdr = Reader(['en'],gpu=True)
 previousAcc=[]
 GreadsToSave=60
 burnerActive=False
+TrackerTimer =4.0
+TrackerFrame = int((1000/TPF)*TrackerTimer)
+FramesToScanTarget = 10
+xTracker = []
+yTracker = []
 while cap.isOpened():
 	currentFrame+=1
 	ret, frame = cap.read()
 	if frame is None:
 		break;
-	if currentFrame >0:
-		Gmeter= frame[gYpix:gYpix+gYoff, gXpix:gXpix+gXoff]
+	Gmeter=None
+	if currentFrame>= TrackerFrame - FramesToScanTarget:
+		if currentFrame>TrackerFrame:
+			Gmeter= frame[gYpix:gYoff, gXpix:gXoff]
+		else:
+			Gmeter=frame
 		Gmeter=cv2.cvtColor(Gmeter, cv2.COLOR_BGR2GRAY)
 		Gmeter=apply_brightness_contrast(Gmeter,0, 128)
 		txresults=[]
@@ -347,12 +357,24 @@ while cap.isOpened():
 		if len(txresults)>0:
 			for elements in txresults:
 				if len(elements)>1:
-					textFound=elements[1]						
-					match = re.search("(\d|[o]|[O]|[g]|[s]|[S])*(\d|[o]|[O]|[g]|[s]|[S])[.](\d|[o]|[O]|[g]|[s]|[S])", textFound)
-					if match:
-						strToUse = match[0].replace('o','0').replace('O','0').replace('g','9').replace('s','5').replace('S','5')
-						GreadOut=float(strToUse)
-						break
+					textFound=elements[1]
+					if currentFrame>TrackerFrame:
+						match = re.search("(\d|[o]|[O]|[g]|[s]|[S])*(\d|[o]|[O]|[g]|[s]|[S])[.](\d|[o]|[O]|[g]|[s]|[S])", textFound)
+						if match:
+							strToUse = match[0].replace('o','0').replace('O','0').replace('g','9').replace('s','5').replace('S','5')
+							GreadOut=float(strToUse)
+							break
+					if currentFrame >= TrackerFrame - FramesToScanTarget and currentFrame< TrackerFrame-1:
+						if textFound=="GEAR":
+							xTracker.append(elements[0][0][0])
+							yTracker.append(elements[0][0][1])
+					elif currentFrame == TrackerFrame-1:
+						xMed= statistics.median(xTracker)
+						yMed= statistics.median(yTracker)
+						gXpix = xMed - TranslatePercentageOffCenterToPixel(18, "w")
+						gXoff = gXpix + TranslatePercentageOffCenterToPixel(15, "w")
+						gYpix = yMed - TranslatePercentageOffCenterToPixel(17, "h")
+						gYoff = gYpix + TranslatePercentageOffCenterToPixel(35, "h")
 		if GreadOut<0:
 			failuresInRow+=1
 			noAccsInRow+=1

@@ -8,7 +8,9 @@ DirectionTest(afterburner, key)
 	Sleep 100
 	Send {V up}
 	Sleep 50
-	MouseMove, -1, 0, 1, R
+	Send {Left down}
+	Sleep 50
+	Send {Up down}
 	Sleep 50
 	if (afterburner>0)
 	{
@@ -28,6 +30,10 @@ DirectionTest(afterburner, key)
 		Send {LShift up}
 		Sleep 50
 	}
+	Send {Up up}
+	Sleep 50
+	Send {Left up}
+	Sleep 50
 	Send {V down}
 	Sleep 100
 	Send {V up}
@@ -75,7 +81,9 @@ TimeToOverheatOneDirection(key)
 	Sleep 100
 	Send {V up}
 	Sleep 50
-	MouseMove, -1, 0, 1, R
+	Send {Left down}
+	Sleep 50
+	Send {Up down}
 	Sleep 50
 	Send {LShift down}
 	Sleep 50
@@ -88,6 +96,10 @@ TimeToOverheatOneDirection(key)
 	Send {%key% up}
 	Sleep 50
 	Send {LShift up}
+	Sleep 50
+	Send {Up up}
+	Sleep 50
+	Send {Left up}
 	Sleep 50
 	Send {V down}
 	Sleep 100
