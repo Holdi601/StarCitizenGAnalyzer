@@ -547,82 +547,82 @@ def analyze_results_from_section_acceleration(section, stats):
 		print("Normal Acceleration Down max Acceleration G detected: "+str(results.NormalAcceleration.down))
 	elif section==7:
 		results.NormalAcceleration.fwdup=get_most_appearing_val(stats)
-		print("Burner Acceleration fwdup max Acceleration G detected: "+str(results.BurnerAcceleration.fwdup))
+		print("Burner Acceleration fwdup max Acceleration G detected: "+str(results.NormalAcceleration.fwdup))
 	elif section==8:
 		results.NormalAcceleration.fwddown=get_most_appearing_val(stats)
-		print("Burner Acceleration fwddown max Acceleration G detected: "+str(results.BurnerAcceleration.fwddown))
+		print("Burner Acceleration fwddown max Acceleration G detected: "+str(results.NormalAcceleration.fwddown))
 	elif section==9:
 		results.NormalAcceleration.fwdleft=get_most_appearing_val(stats)
-		print("Burner Acceleration fwdleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwdleft))
+		print("Burner Acceleration fwdleft max Acceleration G detected: "+str(results.NormalAcceleration.fwdleft))
 	elif section==10:
 		results.NormalAcceleration.fwdright=get_most_appearing_val(stats)
-		print("Burner Acceleration fwdright max Acceleration G detected: "+str(results.BurnerAcceleration.fwdright))
+		print("Burner Acceleration fwdright max Acceleration G detected: "+str(results.NormalAcceleration.fwdright))
 	elif section==11:
 		results.NormalAcceleration.fwdupleft=get_most_appearing_val(stats)
-		print("Burner Acceleration fwdupleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwdupleft))
+		print("Burner Acceleration fwdupleft max Acceleration G detected: "+str(results.NormalAcceleration.fwdupleft))
 	elif section==12:
 		results.NormalAcceleration.fwdupright=get_most_appearing_val(stats)
-		print("Burner Acceleration fwdupright max Acceleration G detected: "+str(results.BurnerAcceleration.fwdupright))
+		print("Burner Acceleration fwdupright max Acceleration G detected: "+str(results.NormalAcceleration.fwdupright))
 	elif section==13:
 		results.NormalAcceleration.fwddownleft=get_most_appearing_val(stats)
-		print("Burner Acceleration fwddownleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwddownleft))
+		print("Burner Acceleration fwddownleft max Acceleration G detected: "+str(results.NormalAcceleration.fwddownleft))
 	elif section==14:
 		results.NormalAcceleration.fwddownright=get_most_appearing_val(stats)
-		print("Burner Acceleration fwddownright max Acceleration G detected: "+str(results.BurnerAcceleration.fwddownright))
+		print("Burner Acceleration fwddownright max Acceleration G detected: "+str(results.NormalAcceleration.fwddownright))
 	elif section==15:
 		results.NormalAcceleration.aftup=get_most_appearing_val(stats)
-		print("Burner Acceleration aftup max Acceleration G detected: "+str(results.BurnerAcceleration.aftup))
+		print("Burner Acceleration aftup max Acceleration G detected: "+str(results.NormalAcceleration.aftup))
 	elif section==16:
 		results.NormalAcceleration.aftdown=get_most_appearing_val(stats)
-		print("Burner Acceleration aftdown max Acceleration G detected: "+str(results.BurnerAcceleration.aftdown))
+		print("Burner Acceleration aftdown max Acceleration G detected: "+str(results.NormalAcceleration.aftdown))
 	elif section==17:
 		results.NormalAcceleration.aftleft=get_most_appearing_val(stats)
-		print("Burner Acceleration aftleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftleft))
+		print("Burner Acceleration aftleft max Acceleration G detected: "+str(results.NormalAcceleration.aftleft))
 	elif section==18:
 		results.NormalAcceleration.aftright=get_most_appearing_val(stats)
-		print("Burner Acceleration aftright max Acceleration G detected: "+str(results.BurnerAcceleration.aftright))
+		print("Burner Acceleration aftright max Acceleration G detected: "+str(results.NormalAcceleration.aftright))
 	elif section==19:
 		results.NormalAcceleration.aftupleft=get_most_appearing_val(stats)
-		print("Burner Acceleration aftupleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftupleft))
+		print("Burner Acceleration aftupleft max Acceleration G detected: "+str(results.NormalAcceleration.aftupleft))
 	elif section==20:
 		results.NormalAcceleration.aftupright=get_most_appearing_val(stats)
-		print("Burner Acceleration aftupright max Acceleration G detected: "+str(results.BurnerAcceleration.aftupright))
+		print("Burner Acceleration aftupright max Acceleration G detected: "+str(results.NormalAcceleration.aftupright))
 	elif section==21:
 		results.NormalAcceleration.aftdownleft=get_most_appearing_val(stats)
-		print("Burner Acceleration aftdownleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftdownleft))
+		print("Burner Acceleration aftdownleft max Acceleration G detected: "+str(results.NormalAcceleration.aftdownleft))
 	elif section==22:
 		results.NormalAcceleration.aftdownright=get_most_appearing_val(stats)
-		print("Burner Acceleration aftdownright max Acceleration G detected: "+str(results.BurnerAcceleration.aftdownright))
+		print("Burner Acceleration aftdownright max Acceleration G detected: "+str(results.NormalAcceleration.aftdownright))
 	elif section==23:
 		results.NormalAcceleration.downleft=get_most_appearing_val(stats)
-		print("Burner Acceleration downleft max Acceleration G detected: "+str(results.BurnerAcceleration.downleft))
+		print("Burner Acceleration downleft max Acceleration G detected: "+str(results.NormalAcceleration.downleft))
 	elif section==24:
 		results.NormalAcceleration.downright=get_most_appearing_val(stats)
-		print("Burner Acceleration downright max Acceleration G detected: "+str(results.BurnerAcceleration.downright))
+		print("Burner Acceleration downright max Acceleration G detected: "+str(results.NormalAcceleration.downright))
 	elif section==25:
 		results.NormalAcceleration.upleft=get_most_appearing_val(stats)
-		print("Burner Acceleration upleft max Acceleration G detected: "+str(results.BurnerAcceleration.upleft))
+		print("Burner Acceleration upleft max Acceleration G detected: "+str(results.NormalAcceleration.upleft))
 	elif section==26:
 		results.NormalAcceleration.upright=get_most_appearing_val(stats)
-		print("Burner Acceleration upright max Acceleration G detected: "+str(results.BurnerAcceleration.upright))
+		print("Burner Acceleration upright max Acceleration G detected: "+str(results.NormalAcceleration.upright))
 	elif section==27:
 		results.BurnerAcceleration.fwd=get_most_appearing_val(stats)
-		print("Normal Acceleration Forward max Acceleration G detected: "+str(results.NormalAcceleration.fwd))
+		print("Normal Acceleration Forward max Acceleration G detected: "+str(results.BurnerAcceleration.fwd))
 	elif section==28:
 		results.BurnerAcceleration.aft=get_most_appearing_val(stats)
-		print("Normal Acceleration Aft max Acceleration G detected: "+str(results.NormalAcceleration.aft))
+		print("Normal Acceleration Aft max Acceleration G detected: "+str(results.BurnerAcceleration.aft))
 	elif section==29:
 		results.BurnerAcceleration.left=get_most_appearing_val(stats)
-		print("Normal Acceleration Left max Acceleration G detected: "+str(results.NormalAcceleration.left))
+		print("Normal Acceleration Left max Acceleration G detected: "+str(results.BurnerAcceleration.left))
 	elif section==30:
 		results.BurnerAcceleration.right=get_most_appearing_val(stats)
-		print("Normal Acceleration Right max Acceleration G detected: "+str(results.NormalAcceleration.right))
+		print("Normal Acceleration Right max Acceleration G detected: "+str(results.BurnerAcceleration.right))
 	elif section==31:
 		results.BurnerAcceleration.up=get_most_appearing_val(stats)
-		print("Normal Acceleration Up max Acceleration G detected: "+str(results.NormalAcceleration.up))
+		print("Normal Acceleration Up max Acceleration G detected: "+str(results.BurnerAcceleration.up))
 	elif section==32:
 		results.BurnerAcceleration.down=get_most_appearing_val(stats)
-		print("Normal Acceleration Down max Acceleration G detected: "+str(results.NormalAcceleration.down))
+		print("Normal Acceleration Down max Acceleration G detected: "+str(results.BurnerAcceleration.down))
 	elif section==33:
 		results.BurnerAcceleration.fwdup=get_most_appearing_val(stats)
 		print("Burner Acceleration fwdup max Acceleration G detected: "+str(results.BurnerAcceleration.fwdup))
