@@ -47,9 +47,29 @@ class Direction:
 		self.down=-1.0
 		self.left=-1.0
 		self.right=-1.0
+		self.fwdup=-1.0
+		self.fwddown=-1.0
+		self.fwdleft=-1.0
+		self.fwdright=-1.0
+		self.fwdupleft=-1.0
+		self.fwdupright=-1.0
+		self.fwddownleft=-1.0
+		self.fwddownright=-1.0
+		self.aftup=-1.0
+		self.aftdown=-1.0
+		self.aftleft=-1.0
+		self.aftright=-1.0
+		self.aftupleft=-1.0
+		self.aftupright=-1.0
+		self.aftdownleft=-1.0
+		self.aftdownright=-1.0
+		self.downleft=-1.0
+		self.downright=-1.0
+		self.upleft=-1.0
+		self.upright=-1.0
 		
 	def toCsvString(self):
-		result=str(self.fwd)+","+str(self.aft)+","+str(self.left)+","+str(self.right)+","+str(self.up)+","+str(self.down)
+		result=str(self.fwd)+","+str(self.aft)+","+str(self.left)+","+str(self.right)+","+str(self.up)+","+str(self.down)+","+str(self.fwdup)+","+str(self.fwddown)+","+str(self.fwdleft)+","+str(self.fwdright)+","+str(self.fwdupleft)+","+str(self.fwdupright)+","+str(self.fwddownleft)+","+str(self.fwddownright)+","+str(self.aftup)+","+str(self.aftdown)+","+str(self.aftleft)+","+str(self.aftright)+","+str(self.aftupleft)+","+str(self.aftupright)+","+str(self.aftdownleft)+","+str(self.aftdownright)+","+str(self.downleft)+","+str(self.downright)+","+str(self.upleft)+","+str(self.upright)
 		return result
 
 def dts(dict):
@@ -66,20 +86,27 @@ class BurnTimeGraph:
 		self.down=[]
 		self.left=[]
 		self.right=[]
-		
-class BurnTimeDirection:
-	def __init__(self):
-		self.fwd={}
-		self.aft={}
-		self.up={}
-		self.down={}
-		self.left={}
-		self.right={}
-		
-	
-	def toCsvString(self):
-		result=dts(self.fwd)+","+dts(self.aft)+","+dts(self.left)+","+dts(self.right)+","+dts(self.up)+","+dts(self.down)
-		return result
+		self.fwdup=[]
+		self.fwddown=[]
+		self.fwdleft=[]
+		self.fwdright=[]
+		self.fwdupleft=[]
+		self.fwdupright=[]
+		self.fwddownleft=[]
+		self.fwddownright=[]
+		self.aftup=[]
+		self.aftdown=[]
+		self.aftleft=[]
+		self.aftright=[]
+		self.aftupleft=[]
+		self.aftupright=[]
+		self.aftdownleft=[]
+		self.aftdownright=[]
+		self.downleft=[]
+		self.downright=[]
+		self.upleft=[]
+		self.upright=[]
+
 
 class ShipResults:
 	def __init__(self):
@@ -89,7 +116,6 @@ class ShipResults:
 		self.CoolTime = Direction()
 		self.HeatedBurnTime = Direction()
 		self.TimeGraph = BurnTimeGraph()
-		
 		self.TestDate=""
 		self.Name=""
 		
@@ -135,6 +161,66 @@ class ShipResults:
 			outputFileTL.write(lineToWrite)
 		for i in range(0, len(self.TimeGraph.down)):
 			lineToWrite=startPart+",down,"+str(i+1)+","+str(self.TimeGraph.down[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwdup)):
+			lineToWrite=startPart+",fwdup,"+str(i+1)+","+str(self.TimeGraph.fwdup[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwddown)):
+			lineToWrite=startPart+",fwddown,"+str(i+1)+","+str(self.TimeGraph.fwddown[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwdleft)):
+			lineToWrite=startPart+",fwdleft,"+str(i+1)+","+str(self.TimeGraph.fwdleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwdright)):
+			lineToWrite=startPart+",fwdright,"+str(i+1)+","+str(self.TimeGraph.fwdright[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwdupleft)):
+			lineToWrite=startPart+",fwdupleft,"+str(i+1)+","+str(self.TimeGraph.fwdupleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwdupright)):
+			lineToWrite=startPart+",fwdupright,"+str(i+1)+","+str(self.TimeGraph.fwdupright[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwddownleft)):
+			lineToWrite=startPart+",fwddownleft,"+str(i+1)+","+str(self.TimeGraph.fwddownleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.fwddownright)):
+			lineToWrite=startPart+",fwddownright,"+str(i+1)+","+str(self.TimeGraph.fwddownright[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftup)):
+			lineToWrite=startPart+",aftup,"+str(i+1)+","+str(self.TimeGraph.aftup[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftdown)):
+			lineToWrite=startPart+",aftdown,"+str(i+1)+","+str(self.TimeGraph.aftdown[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftleft)):
+			lineToWrite=startPart+",aftleft,"+str(i+1)+","+str(self.TimeGraph.aftleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftright)):
+			lineToWrite=startPart+",aftright,"+str(i+1)+","+str(self.TimeGraph.aftright[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftupleft)):
+			lineToWrite=startPart+",aftupleft,"+str(i+1)+","+str(self.TimeGraph.aftupleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftupright)):
+			lineToWrite=startPart+",aftupright,"+str(i+1)+","+str(self.TimeGraph.aftupright[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftdownleft)):
+			lineToWrite=startPart+",aftdownleft,"+str(i+1)+","+str(self.TimeGraph.aftdownleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.aftdownright)):
+			lineToWrite=startPart+",aftdownright,"+str(i+1)+","+str(self.TimeGraph.aftdownright[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.downleft)):
+			lineToWrite=startPart+",downleft,"+str(i+1)+","+str(self.TimeGraph.downleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.downright)):
+			lineToWrite=startPart+",downright,"+str(i+1)+","+str(self.TimeGraph.downright[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.upleft)):
+			lineToWrite=startPart+",upleft,"+str(i+1)+","+str(self.TimeGraph.upleft[i])+"\n"
+			outputFileTL.write(lineToWrite)
+		for i in range(0, len(self.TimeGraph.upright)):
+			lineToWrite=startPart+",upright,"+str(i+1)+","+str(self.TimeGraph.upright[i])+"\n"
 			outputFileTL.write(lineToWrite)
 		outputFileTL.close()
 
@@ -285,24 +371,143 @@ def analyze_results_from_section_acceleration(section, stats):
 		results.NormalAcceleration.down=get_most_appearing_val(stats)
 		print("Normal Acceleration Down max Acceleration G detected: "+str(results.NormalAcceleration.down))
 	elif section==7:
-		results.BurnerAcceleration.fwd=get_most_appearing_val(stats)
-		print("Burner Acceleration Forward max Acceleration G detected: "+str(results.BurnerAcceleration.fwd))
+		results.NormalAcceleration.fwdup=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdup max Acceleration G detected: "+str(results.BurnerAcceleration.fwdup))
 	elif section==8:
-		results.BurnerAcceleration.aft=get_most_appearing_val(stats)
-		print("Burner Acceleration Aft max Acceleration G detected: "+str(results.BurnerAcceleration.aft))
+		results.NormalAcceleration.fwddown=get_most_appearing_val(stats)
+		print("Burner Acceleration fwddown max Acceleration G detected: "+str(results.BurnerAcceleration.fwddown))
 	elif section==9:
-		results.BurnerAcceleration.left=get_most_appearing_val(stats)
-		print("Burner Acceleration Left max Acceleration G detected: "+str(results.BurnerAcceleration.left))
+		results.NormalAcceleration.fwdleft=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwdleft))
 	elif section==10:
-		results.BurnerAcceleration.right=get_most_appearing_val(stats)
-		print("Burner Acceleration Right max Acceleration G detected: "+str(results.BurnerAcceleration.right))
+		results.NormalAcceleration.fwdright=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdright max Acceleration G detected: "+str(results.BurnerAcceleration.fwdright))
 	elif section==11:
-		results.BurnerAcceleration.up=get_most_appearing_val(stats)
-		print("Burner Acceleration Up max Acceleration G detected: "+str(results.BurnerAcceleration.up))
+		results.NormalAcceleration.fwdupleft=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdupleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwdupleft))
 	elif section==12:
+		results.NormalAcceleration.fwdupright=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdupright max Acceleration G detected: "+str(results.BurnerAcceleration.fwdupright))
+	elif section==13:
+		results.NormalAcceleration.fwddownleft=get_most_appearing_val(stats)
+		print("Burner Acceleration fwddownleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwddownleft))
+	elif section==14:
+		results.NormalAcceleration.fwddownright=get_most_appearing_val(stats)
+		print("Burner Acceleration fwddownright max Acceleration G detected: "+str(results.BurnerAcceleration.fwddownright))
+	elif section==15:
+		results.NormalAcceleration.aftup=get_most_appearing_val(stats)
+		print("Burner Acceleration aftup max Acceleration G detected: "+str(results.BurnerAcceleration.aftup))
+	elif section==16:
+		results.NormalAcceleration.aftdown=get_most_appearing_val(stats)
+		print("Burner Acceleration aftdown max Acceleration G detected: "+str(results.BurnerAcceleration.aftdown))
+	elif section==17:
+		results.NormalAcceleration.aftleft=get_most_appearing_val(stats)
+		print("Burner Acceleration aftleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftleft))
+	elif section==18:
+		results.NormalAcceleration.aftright=get_most_appearing_val(stats)
+		print("Burner Acceleration aftright max Acceleration G detected: "+str(results.BurnerAcceleration.aftright))
+	elif section==19:
+		results.NormalAcceleration.aftupleft=get_most_appearing_val(stats)
+		print("Burner Acceleration aftupleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftupleft))
+	elif section==20:
+		results.NormalAcceleration.aftupright=get_most_appearing_val(stats)
+		print("Burner Acceleration aftupright max Acceleration G detected: "+str(results.BurnerAcceleration.aftupright))
+	elif section==21:
+		results.NormalAcceleration.aftdownleft=get_most_appearing_val(stats)
+		print("Burner Acceleration aftdownleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftdownleft))
+	elif section==22:
+		results.NormalAcceleration.aftdownright=get_most_appearing_val(stats)
+		print("Burner Acceleration aftdownright max Acceleration G detected: "+str(results.BurnerAcceleration.aftdownright))
+	elif section==23:
+		results.NormalAcceleration.downleft=get_most_appearing_val(stats)
+		print("Burner Acceleration downleft max Acceleration G detected: "+str(results.BurnerAcceleration.downleft))
+	elif section==24:
+		results.NormalAcceleration.downright=get_most_appearing_val(stats)
+		print("Burner Acceleration downright max Acceleration G detected: "+str(results.BurnerAcceleration.downright))
+	elif section==25:
+		results.NormalAcceleration.upleft=get_most_appearing_val(stats)
+		print("Burner Acceleration upleft max Acceleration G detected: "+str(results.BurnerAcceleration.upleft))
+	elif section==26:
+		results.NormalAcceleration.upright=get_most_appearing_val(stats)
+		print("Burner Acceleration upright max Acceleration G detected: "+str(results.BurnerAcceleration.upright))
+	elif section==27:
+		results.BurnerAcceleration.fwd=get_most_appearing_val(stats)
+		print("Normal Acceleration Forward max Acceleration G detected: "+str(results.NormalAcceleration.fwd))
+	elif section==28:
+		results.BurnerAcceleration.aft=get_most_appearing_val(stats)
+		print("Normal Acceleration Aft max Acceleration G detected: "+str(results.NormalAcceleration.aft))
+	elif section==29:
+		results.BurnerAcceleration.left=get_most_appearing_val(stats)
+		print("Normal Acceleration Left max Acceleration G detected: "+str(results.NormalAcceleration.left))
+	elif section==30:
+		results.BurnerAcceleration.right=get_most_appearing_val(stats)
+		print("Normal Acceleration Right max Acceleration G detected: "+str(results.NormalAcceleration.right))
+	elif section==31:
+		results.BurnerAcceleration.up=get_most_appearing_val(stats)
+		print("Normal Acceleration Up max Acceleration G detected: "+str(results.NormalAcceleration.up))
+	elif section==32:
 		results.BurnerAcceleration.down=get_most_appearing_val(stats)
-		accelerationToBeAbove=results.NormalAcceleration.fwd-0.1
-		print("Burner Acceleration Down max Acceleration G detected: "+str(results.BurnerAcceleration.down))
+		print("Normal Acceleration Down max Acceleration G detected: "+str(results.NormalAcceleration.down))
+	elif section==33:
+		results.BurnerAcceleration.fwdup=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdup max Acceleration G detected: "+str(results.BurnerAcceleration.fwdup))
+	elif section==34:
+		results.BurnerAcceleration.fwddown=get_most_appearing_val(stats)
+		print("Burner Acceleration fwddown max Acceleration G detected: "+str(results.BurnerAcceleration.fwddown))
+	elif section==35:
+		results.BurnerAcceleration.fwdleft=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwdleft))
+	elif section==36:
+		results.BurnerAcceleration.fwdright=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdright max Acceleration G detected: "+str(results.BurnerAcceleration.fwdright))
+	elif section==37:
+		results.BurnerAcceleration.fwdupleft=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdupleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwdupleft))
+	elif section==38:
+		results.BurnerAcceleration.fwdupright=get_most_appearing_val(stats)
+		print("Burner Acceleration fwdupright max Acceleration G detected: "+str(results.BurnerAcceleration.fwdupright))
+	elif section==39:
+		results.BurnerAcceleration.fwddownleft=get_most_appearing_val(stats)
+		print("Burner Acceleration fwddownleft max Acceleration G detected: "+str(results.BurnerAcceleration.fwddownleft))
+	elif section==40:
+		results.BurnerAcceleration.fwddownright=get_most_appearing_val(stats)
+		print("Burner Acceleration fwddownright max Acceleration G detected: "+str(results.BurnerAcceleration.fwddownright))
+	elif section==41:
+		results.BurnerAcceleration.aftup=get_most_appearing_val(stats)
+		print("Burner Acceleration aftup max Acceleration G detected: "+str(results.BurnerAcceleration.aftup))
+	elif section==42:
+		results.BurnerAcceleration.aftdown=get_most_appearing_val(stats)
+		print("Burner Acceleration aftdown max Acceleration G detected: "+str(results.BurnerAcceleration.aftdown))
+	elif section==43:
+		results.BurnerAcceleration.aftleft=get_most_appearing_val(stats)
+		print("Burner Acceleration aftleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftleft))
+	elif section==44:
+		results.BurnerAcceleration.aftright=get_most_appearing_val(stats)
+		print("Burner Acceleration aftright max Acceleration G detected: "+str(results.BurnerAcceleration.aftright))
+	elif section==45:
+		results.BurnerAcceleration.aftupleft=get_most_appearing_val(stats)
+		print("Burner Acceleration aftupleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftupleft))
+	elif section==46:
+		results.BurnerAcceleration.aftupright=get_most_appearing_val(stats)
+		print("Burner Acceleration aftupright max Acceleration G detected: "+str(results.BurnerAcceleration.aftupright))
+	elif section==47:
+		results.BurnerAcceleration.aftdownleft=get_most_appearing_val(stats)
+		print("Burner Acceleration aftdownleft max Acceleration G detected: "+str(results.BurnerAcceleration.aftdownleft))
+	elif section==48:
+		results.BurnerAcceleration.aftdownright=get_most_appearing_val(stats)
+		print("Burner Acceleration aftdownright max Acceleration G detected: "+str(results.BurnerAcceleration.aftdownright))
+	elif section==49:
+		results.BurnerAcceleration.downleft=get_most_appearing_val(stats)
+		print("Burner Acceleration downleft max Acceleration G detected: "+str(results.BurnerAcceleration.downleft))
+	elif section==50:
+		results.BurnerAcceleration.downright=get_most_appearing_val(stats)
+		print("Burner Acceleration downright max Acceleration G detected: "+str(results.BurnerAcceleration.downright))
+	elif section==51:
+		results.BurnerAcceleration.upleft=get_most_appearing_val(stats)
+		print("Burner Acceleration upleft max Acceleration G detected: "+str(results.BurnerAcceleration.upleft))
+	elif section==52:
+		results.BurnerAcceleration.upright=get_most_appearing_val(stats)
+		print("Burner Acceleration upright max Acceleration G detected: "+str(results.BurnerAcceleration.upright))
 
 def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
 	if brightness != 0:
@@ -334,6 +539,18 @@ TrackerFrame = int((1000/TPF)*TrackerTimer)
 FramesToScanTarget = 10
 xTracker = []
 yTracker = []
+BurnerTimeToleranceSeconds = 3
+BurnerPressPeriodInSeconds =30- BurnerTimeToleranceSeconds
+BurnerPressPeriodInFrames =(1000/TPF)*BurnerPressPeriodInSeconds
+BurnerStartRef = -1
+testStageBurnThreshhold=52
+
+def sample_size(stats):
+	result=0
+	for key in stats:
+		result+=stats[key]
+	return result
+
 while cap.isOpened():
 	currentFrame+=1
 	ret, frame = cap.read()
@@ -403,13 +620,11 @@ while cap.isOpened():
 			else:
 				noAccsInRow+=1
 				AccsInRow=0
-		elif failuresInRow==framesToCloseSection and not closed:
+		elif failuresInRow==framesToCloseSection and not closed and sample_size(stats)>0 and (testStage<13 or currentFrame>(BurnerStartRef+BurnerPressPeriodInFrames)):
 			succesesInRow=0
 			print(str(testStage) + ' Section Closed Section Duration in Frames: '+ str(lastLegitFrame-referenceFrame))
 			print(stats)
-			if testStage==1 and len(stats)==0:
-				testStage=0
-			if testStage<13:
+			if testStage<testStageBurnThreshhold+1:
 				analyze_results_from_section_acceleration(testStage, stats)
 			else:
 				framesToCloseSection=int(CoolDownPeriodInFrames)
@@ -421,13 +636,12 @@ while cap.isOpened():
 			burnerActive=False
 			TimeLine=[]
 			closed=True
+			burnerActive=False
+			BurnerStartRef =-1
 			if testStage==18:
 				break
 		if testStage>12 and burnerActive:
-			if GreadOut>=0:
-				TimeLine.append(GreadOut)
-			else:
-				TimeLine.append(previousAcc[0])
+			TimeLine.append(GreadOut)
 		if succesesInRow==framesToStartSection and closed:
 			print('Section Started')
 			TimeLine=[]
@@ -444,25 +658,24 @@ while cap.isOpened():
 			referenceStartAcc=-1
 			referenceNoAcc=-1
 			stats={}	
-		if noAccsInRow== framesToDeclareNoAcc and testStage>12 and referenceStartAcc>=0 and burnerStage==0:
+		if noAccsInRow== framesToDeclareNoAcc and testStage>testStageBurnThreshhold and referenceStartAcc>=0 and burnerStage==0:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
+			BurnerStartRef = referenceStartAcc
 			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 			referenceStartAcc=-1
 			burnerStage+=1
 			referenceNoAcc=currentFrame-framesToDeclareNoAcc
 			succesesInRow=-1
-		elif burnerStage==1 and  referenceNoAcc>0 and testStage>12 and AccsInRow==framesToDeclareAcc:
+		elif burnerStage==1 and  referenceNoAcc>0 and testStage>testStageBurnThreshhold and AccsInRow==framesToDeclareAcc:
 			framesOfCD=currentFrame-framesToDeclareAcc-referenceNoAcc
 			analyze_results_from_time(testStage, burnerStage, framesOfCD)
 			burnerStage+=1
 			referenceNoAcc=-1
 			referenceStartAcc=currentFrame-framesToDeclareAcc
-		elif burnerStage==2 and referenceStartAcc>0 and testStage>12 and noAccsInRow== framesToDeclareNoAcc:
+		elif burnerStage==2 and referenceStartAcc>0 and testStage>testStageBurnThreshhold and noAccsInRow== framesToDeclareNoAcc:
 			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
 			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
-			analyze_graph(testStage, TimeLine)
 			burnerStage+=1
-			burnerActive=False
 			print("Done in direction, waiting for external view")
 		if testStage==18 and burnerStage==3:
 			break
