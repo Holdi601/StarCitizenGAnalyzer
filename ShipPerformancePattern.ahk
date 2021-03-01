@@ -1,28 +1,49 @@
 ﻿pythonAnalyzerLocation = F:\Dropbox\Programmierung\StarCitizenGAnalyzer\analyzeVideo.py
 pythonDataSummarizer = F:\Dropbox\Programmierung\StarCitizenGAnalyzer\dataSummarizer.py
 
-DirectionTest(afterburner, key)
+DirectionTest(afterburner, key, key2, key3 )
 {
 	ZoomIn()
 	Send {V down}
 	Sleep 100
 	Send {V up}
 	Sleep 50
-	Send {Left down}
-	Sleep 50
-	Send {Up down}
-	Sleep 50
+	; Send {Left down}
+	; Sleep 50
+	; Send {Up down}
+	; Sleep 50
 	if (afterburner>0)
 	{
 		Send {LShift down}
 		Sleep 50
 	}
 	Send {%key% down}
+	Sleep 50
+	if ( key2 <> "none")
+	{
+		Send {%key2% down}
+		Sleep 50
+	}
+	if ( key3 <> "none")
+	{
+		Send {%key3% down}
+		Sleep 50
+	}
 	Sleep 1000
 	Send {F4 down}
 	Sleep 50
 	Send {F4 up}
 	Sleep 50
+	if ( key3 <> "none")
+	{
+		Send {%key3% up}
+		Sleep 50
+	}
+	if ( key2 <> "none")
+	{
+		Send {%key2% up}
+		Sleep 50
+	}
 	Send {%key% up}
 	Sleep 50
 	if(afterburner>0)
@@ -30,10 +51,10 @@ DirectionTest(afterburner, key)
 		Send {LShift up}
 		Sleep 50
 	}
-	Send {Up up}
-	Sleep 50
-	Send {Left up}
-	Sleep 50
+	; Send {Up up}
+	; Sleep 50
+	; Send {Left up}
+	; Sleep 50
 	Send {V down}
 	Sleep 100
 	Send {V up}
@@ -60,35 +81,97 @@ ZoomIn()
 
 BasicAcceleration(aft)
 {
-	DirectionTest(aft, "w")
+	DirectionTest(aft, "w", "none", "none")
 	Sleep 100
-	DirectionTest(aft, "s")
+	DirectionTest(aft, "s", "none", "none")
 	Sleep 100
-	DirectionTest(aft, "a")
+	DirectionTest(aft, "a", "none", "none")
 	Sleep 100
-	DirectionTest(aft, "d")
+	DirectionTest(aft, "d", "none", "none")
 	Sleep 100
-	DirectionTest(aft, "Space")
+	DirectionTest(aft, "Space", "none", "none")
 	Sleep 100
-	DirectionTest(aft, "LCtrl")
+	DirectionTest(aft, "LCtrl", "none", "none")
+	Sleep 100
+	
+	DirectionTest(aft, "w", "Space", "none")
+	Sleep 100
+	DirectionTest(aft, "w", "LCtrl", "none")
+	Sleep 100
+	DirectionTest(aft, "w", "a", "none")
+	Sleep 100
+	DirectionTest(aft, "w", "d", "none")
+	Sleep 100
+	DirectionTest(aft, "w", "Space", "a")
+	Sleep 100
+	DirectionTest(aft, "w", "Space", "d")
+	Sleep 100
+	DirectionTest(aft, "w", "LCtrl", "a")
+	Sleep 100
+	DirectionTest(aft, "w", "LCtrl", "d")
+	Sleep 100
+	DirectionTest(aft, "s", "Space", "none")
+	Sleep 100
+	DirectionTest(aft, "s", "LCtrl", "none")
+	Sleep 100
+	DirectionTest(aft, "s", "a", "none")
+	Sleep 100
+	DirectionTest(aft, "s", "d", "none")
+	Sleep 100
+	DirectionTest(aft, "s", "Space", "a")
+	Sleep 100
+	DirectionTest(aft, "s", "Space", "d")
+	Sleep 100
+	DirectionTest(aft, "s", "LCtrl", "a")
+	Sleep 100
+	DirectionTest(aft, "s", "LCtrl", "d")
+	Sleep 100
+	DirectionTest(aft, "LCtrl", "a", "none")
+	Sleep 100
+	DirectionTest(aft, "LCtrl", "d", "none")
+	Sleep 100
+	DirectionTest(aft, "Space", "a", "none")
+	Sleep 100
+	DirectionTest(aft, "Space", "d", "none")
 	Sleep 100
 }
 
-TimeToOverheatOneDirection(key)
+TimeToOverheatOneDirection(key, key2, key3)
 {
 	ZoomIn()
 	Send {V down}
 	Sleep 100
 	Send {V up}
 	Sleep 50
-	Send {Left down}
-	Sleep 50
-	Send {Up down}
-	Sleep 50
+	; Send {Left down}
+	; Sleep 50
+	; Send {Up down}
+	; Sleep 50
 	Send {LShift down}
 	Sleep 50
 	Send {%key% down}
+	Sleep 50
+	if ( key2 <> "none")
+	{
+		Send {%key2% down}
+		Sleep 50
+	}
+	if ( key3 <> "none")
+	{
+		Send {%key3% down}
+		Sleep 50
+	}
 	Sleep 30000
+	if ( key3 <> "none")
+	{
+		Send {%key3% up}
+		Sleep 50
+	}
+	if ( key2 <> "none")
+	{
+		Send {%key2% up}
+		Sleep 50
+	}
 	Send {F4 down}
 	Sleep 50
 	Send {F4 up}
@@ -113,18 +196,60 @@ TimeToOverheatOneDirection(key)
 
 TimeToOverheat()
 {
-	TimeToOverheatOneDirection("w")
-	Sleep 10000
-	TimeToOverheatOneDirection("s")
-	Sleep 10000
-	TimeToOverheatOneDirection("a")
-	Sleep 10000
-	TimeToOverheatOneDirection("d")
-	Sleep 10000
-	TimeToOverheatOneDirection("Space")
-	Sleep 10000
-	TimeToOverheatOneDirection("LCtrl")
-	Sleep 10000
+	TimeToOverheatOneDirection("w", "none", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "none", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("a", "none", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("d", "none", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("Space", "none", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("LCtrl", "none", "none")
+	Sleep 20000
+	
+	
+	TimeToOverheatOneDirection("w", "Space", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("w", "LCtrl", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("w", "a", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("w", "d", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("w", "Space", "a")
+	Sleep 20000
+	TimeToOverheatOneDirection("w", "Space", "d")
+	Sleep 20000
+	TimeToOverheatOneDirection("w", "LCtrl", "a")
+	Sleep 20000
+	TimeToOverheatOneDirection("w", "LCtrl", "d")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "Space", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "LCtrl", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "a", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "d", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "Space", "a")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "Space", "d")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "LCtrl", "a")
+	Sleep 20000
+	TimeToOverheatOneDirection("s", "LCtrl", "d")
+	Sleep 20000
+	TimeToOverheatOneDirection("LCtrl", "a", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("LCtrl", "d", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("Space", "a", "none")
+	Sleep 20000
+	TimeToOverheatOneDirection("Space", "d", "none")
+	Sleep 20000
 }
 
 StartStopRecording()

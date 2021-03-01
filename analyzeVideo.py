@@ -285,68 +285,243 @@ def get_most_appearing_val(stats):
 	return returnVal
 	
 def analyze_graph(section, graph):
-	if section==13:
+	if section==testStageBurnThreshhold+1:
 		results.TimeGraph.fwd = graph
-	if section==14:
+	elif section==testStageBurnThreshhold+2:
 		results.TimeGraph.aft = graph
-	if section==15:
+	elif section==testStageBurnThreshhold+3:
 		results.TimeGraph.left = graph
-	if section==16:
+	elif section==testStageBurnThreshhold+4:
 		results.TimeGraph.right = graph
-	if section==17:
+	elif section==testStageBurnThreshhold+5:
 		results.TimeGraph.up = graph
-	if section==18:
+	elif section==testStageBurnThreshhold+6:
 		results.TimeGraph.down = graph
+	elif section==testStageBurnThreshhold+7:
+		results.TimeGraph.fwdup = graph
+	elif section==testStageBurnThreshhold+8:
+		results.TimeGraph.fwddown = graph
+	elif section==testStageBurnThreshhold+9:
+		results.TimeGraph.fwdleft = graph
+	elif section==testStageBurnThreshhold+10:
+		results.TimeGraph.fwdright = graph
+	elif section==testStageBurnThreshhold+11:
+		results.TimeGraph.fwdupleft = graph
+	elif section==testStageBurnThreshhold+12:
+		results.TimeGraph.fwdupright = graph
+	elif section==testStageBurnThreshhold+13:
+		results.TimeGraph.fwddownleft = graph
+	elif section==testStageBurnThreshhold+14:
+		results.TimeGraph.fwddownright = graph
+	elif section==testStageBurnThreshhold+15:
+		results.TimeGraph.aftup = graph
+	elif section==testStageBurnThreshhold+16:
+		results.TimeGraph.aftdown = graph
+	elif section==testStageBurnThreshhold+17:
+		results.TimeGraph.aftleft = graph
+	elif section==testStageBurnThreshhold+18:
+		results.TimeGraph.aftright = graph
+	elif section==testStageBurnThreshhold+19:
+		results.TimeGraph.aftupleft = graph
+	elif section==testStageBurnThreshhold+20:
+		results.TimeGraph.aftupright = graph
+	elif section==testStageBurnThreshhold+21:
+		results.TimeGraph.aftdownleft = graph
+	elif section==testStageBurnThreshhold+22:
+		results.TimeGraph.aftdownright = graph
+	elif section==testStageBurnThreshhold+23:
+		results.TimeGraph.downleft = graph
+	elif section==testStageBurnThreshhold+24:
+		results.TimeGraph.downright = graph
+	elif section==testStageBurnThreshhold+25:
+		results.TimeGraph.upleft = graph
+	elif section==testStageBurnThreshhold+26:
+		results.TimeGraph.upright = graph
 	
 
 def analyze_results_from_time(section, burnstage, frames):
-	if section==13:
+	if section==testStageBurnThreshhold+1:
 		if burnerStage==0:
 			results.BurnTime.fwd=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.fwd=frames*TPF
 		else:
 			results.HeatedBurnTime.fwd=frames*TPF
-			accelerationToBeAbove=results.NormalAcceleration.aft-0.1
-	elif section==14:
+	elif section==testStageBurnThreshhold+2:
 		if burnerStage==0:
 			results.BurnTime.aft=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.aft=frames*TPF
 		else:
 			results.HeatedBurnTime.aft=frames*TPF
-			accelerationToBeAbove=results.NormalAcceleration.left-0.1
-	elif section==15:
+	elif section==testStageBurnThreshhold+3:
 		if burnerStage==0:
 			results.BurnTime.left=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.left=frames*TPF
 		else:
 			results.HeatedBurnTime.left=frames*TPF
-			accelerationToBeAbove=results.NormalAcceleration.right-0.1
-	elif section==16:
+	elif section==testStageBurnThreshhold+4:
 		if burnerStage==0:
 			results.BurnTime.right=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.right=frames*TPF
 		else:
 			results.HeatedBurnTime.right=frames*TPF
-			accelerationToBeAbove=results.NormalAcceleration.up-0.1
-	elif section==17:
+	elif section==testStageBurnThreshhold+5:
 		if burnerStage==0:
 			results.BurnTime.up=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.up=frames*TPF
 		else:
 			results.HeatedBurnTime.up=frames*TPF
-			accelerationToBeAbove=results.NormalAcceleration.down-0.1
-	elif section==18:
+	elif section==testStageBurnThreshhold+6:
 		if burnerStage==0:
 			results.BurnTime.down=frames*TPF
 		elif burnerStage==1:
 			results.CoolTime.down=frames*TPF
 		else:
 			results.HeatedBurnTime.down=frames*TPF
+	elif section==testStageBurnThreshhold+7:
+		if burnerStage==0:
+			results.BurnTime.fwdup=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwdup=frames*TPF
+		else:
+			results.HeatedBurnTime.fwdup=frames*TPF
+	elif section==testStageBurnThreshhold+8:
+		if burnerStage==0:
+			results.BurnTime.fwddown=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwddown=frames*TPF
+		else:
+			results.HeatedBurnTime.fwddown=frames*TPF
+	elif section==testStageBurnThreshhold+9:
+		if burnerStage==0:
+			results.BurnTime.fwdleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwdleft=frames*TPF
+		else:
+			results.HeatedBurnTime.fwdleft=frames*TPF
+	elif section==testStageBurnThreshhold+10:
+		if burnerStage==0:
+			results.BurnTime.fwdright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwdright=frames*TPF
+		else:
+			results.HeatedBurnTime.fwdright=frames*TPF
+	elif section==testStageBurnThreshhold+11:
+		if burnerStage==0:
+			results.BurnTime.fwdupleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwdupleft=frames*TPF
+		else:
+			results.HeatedBurnTime.fwdupleft=frames*TPF
+	elif section==testStageBurnThreshhold+12:
+		if burnerStage==0:
+			results.BurnTime.fwdupright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwdupright=frames*TPF
+		else:
+			results.HeatedBurnTime.fwdupright=frames*TPF
+	elif section==testStageBurnThreshhold+13:
+		if burnerStage==0:
+			results.BurnTime.fwddownleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwddownleft=frames*TPF
+		else:
+			results.HeatedBurnTime.fwddownleft=frames*TPF
+	elif section==testStageBurnThreshhold+14:
+		if burnerStage==0:
+			results.BurnTime.fwddownright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.fwddownright=frames*TPF
+		else:
+			results.HeatedBurnTime.fwddownright=frames*TPF
+	elif section==testStageBurnThreshhold+15:
+		if burnerStage==0:
+			results.BurnTime.aftup=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftup=frames*TPF
+		else:
+			results.HeatedBurnTime.aftup=frames*TPF
+	elif section==testStageBurnThreshhold+16:
+		if burnerStage==0:
+			results.BurnTime.aftdown=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftdown=frames*TPF
+		else:
+			results.HeatedBurnTime.aftdown=frames*TPF
+	elif section==testStageBurnThreshhold+17:
+		if burnerStage==0:
+			results.BurnTime.aftleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftleft=frames*TPF
+		else:
+			results.HeatedBurnTime.aftleft=frames*TPF
+	elif section==testStageBurnThreshhold+18:
+		if burnerStage==0:
+			results.BurnTime.aftright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftright=frames*TPF
+		else:
+			results.HeatedBurnTime.aftright=frames*TPF
+	elif section==testStageBurnThreshhold+19:
+		if burnerStage==0:
+			results.BurnTime.aftupleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftupleft=frames*TPF
+		else:
+			results.HeatedBurnTime.aftupleft=frames*TPF
+	elif section==testStageBurnThreshhold+20:
+		if burnerStage==0:
+			results.BurnTime.aftupright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftupright=frames*TPF
+		else:
+			results.HeatedBurnTime.aftupright=frames*TPF
+	elif section==testStageBurnThreshhold+21:
+		if burnerStage==0:
+			results.BurnTime.aftdownleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftdownleft=frames*TPF
+		else:
+			results.HeatedBurnTime.aftdownleft=frames*TPF
+	elif section==testStageBurnThreshhold+22:
+		if burnerStage==0:
+			results.BurnTime.aftdownright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.aftdownright=frames*TPF
+		else:
+			results.HeatedBurnTime.aftdownright=frames*TPF
+	elif section==testStageBurnThreshhold+23:
+		if burnerStage==0:
+			results.BurnTime.downleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.downleft=frames*TPF
+		else:
+			results.HeatedBurnTime.downleft=frames*TPF
+	elif section==testStageBurnThreshhold+24:
+		if burnerStage==0:
+			results.BurnTime.downright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.downright=frames*TPF
+		else:
+			results.HeatedBurnTime.downright=frames*TPF
+	elif section==testStageBurnThreshhold+25:
+		if burnerStage==0:
+			results.BurnTime.upleft=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.upleft=frames*TPF
+		else:
+			results.HeatedBurnTime.upleft=frames*TPF
+	elif section==testStageBurnThreshhold+26:
+		if burnerStage==0:
+			results.BurnTime.upright=frames*TPF
+		elif burnerStage==1:
+			results.CoolTime.upright=frames*TPF
+		else:
+			results.HeatedBurnTime.upright=frames*TPF
 	print(str(section)+" "+ str(burnerStage) +" finished with " + str(frames*TPF))
 
 def analyze_results_from_section_acceleration(section, stats):
@@ -611,7 +786,7 @@ while cap.isOpened():
 				if referenceStartAcc <0:
 					referenceStartAcc=currentFrame
 					print("Acceleration started")
-					if testStage>12 and not burnerActive:
+					if testStage>testStageBurnThreshhold and not burnerActive:
 						burnerActive=True
 				if GreadOut in stats:
 					stats[GreadOut]+=1
@@ -638,9 +813,9 @@ while cap.isOpened():
 			closed=True
 			burnerActive=False
 			BurnerStartRef =-1
-			if testStage==18:
+			if testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)):
 				break
-		if testStage>12 and burnerActive:
+		if testStage>testStageBurnThreshhold and burnerActive:
 			TimeLine.append(GreadOut)
 		if succesesInRow==framesToStartSection and closed:
 			print('Section Started')
@@ -677,7 +852,7 @@ while cap.isOpened():
 			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 			burnerStage+=1
 			print("Done in direction, waiting for external view")
-		if testStage==18 and burnerStage==3:
+		if testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)) and burnerStage==3:
 			break
 		cv2.imshow('SCAnalyze', Gmeter)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
