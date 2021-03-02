@@ -10,6 +10,7 @@ from datetime import datetime
 from easyocr import Reader
 import statistics
 
+Debug=True
 def Mbox(title, text, style):
 	return ctypes.windll.user32.MessageBoxW(0, text, title, style)
 
@@ -30,6 +31,8 @@ LatestVideo = GetYoungestVideoInFoler(VideoFilePath)
 SpaceShip = 'Debug-Debug-Debug'
 if len(sys.argv)>1:
 	SpaceShip=sys.argv[1]
+else:
+	SpaceShip="Aegis-Eclipse-NR_MC"
 SpaceShip =  SpaceShip.replace(',','')
 videoProperties= get_video_properties(LatestVideo)
 HalfHeight = int(videoProperties['height']/2)
@@ -154,7 +157,8 @@ def writeArrayToFile( prefix, fileWriter, arr, dir1, dir2, dir3):
 			lineToWrite=prefix+","+dir1+","+dir2+","+dir3+","+str(i+1)+","+str(arr[i])+"\n"
 			fileWriter.write(lineToWrite)
 
-def writeTimeGraph(tg, prefix, filewriter):
+
+def writeTimeGraph(prefix, filewriter, tg):
 	writeArrayToFile(prefix, filewriter, tg.fwd, "fwd","none","none")
 	writeArrayToFile(prefix, filewriter, tg.aft, "aft","none","none")
 	writeArrayToFile(prefix, filewriter, tg.left, "none","none","left")
@@ -193,7 +197,7 @@ class ShipResults:
 		self.TestDate=""
 		self.Name=""
 		
-	def writeResults(self, path, append=True):
+	def writeResults(self, path, append=False):
 		outputFile = None
 		completePath = path+"\\"+self.Name+"_overview"+".stats"
 		outputFileTL = None
@@ -221,9 +225,91 @@ class ShipResults:
 		buStartup=startPart
 		startPart=buStartup+",raw"
 		writeTimeGraph(startPart, outputFileTL, self.TimeGraph)
+		print("now clean")
 		startPart=buStartup+",cleaned"
 		writeTimeGraph(startPart, outputFileTL, self.TimeGraph.getCleanObject())
 		outputFileTL.close()
+
+
+def createDummyDirection():
+	f1=Direction()
+	f1.fwd=1.0
+	f1.aft=2.0
+	f1.up=3.0
+	f1.down=4.0
+	f1.left=5.0
+	f1.right=6.0
+	f1.fwdup=7.0
+	f1.fwddown=8.0
+	f1.fwdleft=9.0
+	f1.fwdright=10.0
+	f1.fwdupleft=11.0
+	f1.fwdupright=12.0
+	f1.fwddownleft=21.0
+	f1.fwddownright=-31.0
+	f1.aftup=41.0
+	f1.aftdown=51.0
+	f1.aftleft=61.0
+	f1.aftright=71.0
+	f1.aftupleft=81.0
+	f1.aftupright=91.0
+	f1.aftdownleft=101.0
+	f1.aftdownright=111.0
+	f1.downleft=-121.0
+	f1.downright=131.0
+	f1.upleft=141.0
+	f1.upright=161.0
+	return f1
+	
+def createDummyArray():
+	arr=[]
+	for i in range(0,100):
+		arr.append(i)
+	return arr
+	
+def createDummyBT():
+	f1 = BurnTimeGraph()
+	f1.fwd=createDummyArray()
+	f1.aft=createDummyArray()
+	f1.up=createDummyArray()
+	f1.down=createDummyArray()
+	f1.left=createDummyArray()
+	f1.right=createDummyArray()
+	f1.fwdup=createDummyArray()
+	f1.fwddown=createDummyArray()
+	f1.fwdleft=createDummyArray()
+	f1.fwdright=createDummyArray()
+	f1.fwdupleft=createDummyArray()
+	f1.fwdupright=createDummyArray()
+	f1.fwddownleft=createDummyArray()
+	f1.fwddownright=createDummyArray()
+	f1.aftup=createDummyArray()
+	f1.aftdown=createDummyArray()
+	f1.aftleft=createDummyArray()
+	f1.aftright=createDummyArray()
+	f1.aftupleft=createDummyArray()
+	f1.aftupright=createDummyArray()
+	f1.aftdownleft=createDummyArray()
+	f1.aftdownright=createDummyArray()
+	f1.downleft=createDummyArray()
+	f1.downright=createDummyArray()
+	f1.upleft=createDummyArray()
+	f1.upright=createDummyArray()
+	return f1
+	
+def ShipWriteUnitTest():
+	r = ShipResults()
+	r.NormalAcceleration=createDummyDirection()
+	r.BurnerAcceleration=createDummyDirection()
+	r.BurnTime = createDummyDirection()
+	r.CoolTime = createDummyDirection()
+	r.HeatedBurnTime = createDummyDirection()
+	r.TimeGraph = createDummyBT()
+	r.writeResults("F:\\Dropbox\\Programmierung\\StarCitizenGAnalyzer\\DataOutput\\")
+	
+
+#ShipWriteUnitTest()
+
 
 
 def TranslatePercentageOffCenterToPixel(Percentage, HoW):
@@ -738,8 +824,8 @@ while cap.isOpened():
 			Gmeter= frame[gYpix:gYoff, gXpix:gXoff]
 		else:
 			Gmeter=frame
-		Gmeter=cv2.cvtColor(Gmeter, cv2.COLOR_BGR2GRAY)
-		Gmeter=apply_brightness_contrast(Gmeter,0, 128)
+		#Gmeter=cv2.cvtColor(Gmeter, cv2.COLOR_BGR2GRAY)
+		#Gmeter=apply_brightness_contrast(Gmeter,0, 128)
 		txresults=[]
 		try:
 			txresults= rdr.readtext(Gmeter)
@@ -751,6 +837,8 @@ while cap.isOpened():
 			for elements in txresults:
 				if len(elements)>1:
 					textFound=elements[1]
+					if Debug:
+						cv2.putText(Gmeter,textFound, (int(elements[0][0][0]) , int(elements[0][0][1])), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
 					if currentFrame>TrackerFrame:
 						match = re.search("(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])*(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])[.](\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])", textFound)
 						if match:
@@ -855,9 +943,16 @@ while cap.isOpened():
 			print("Done in direction, waiting for external view")
 		if testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)) and burnerStage==3:
 			break
-		cv2.imshow('SCAnalyze', Gmeter)
+		if Debug:
+			cv2.imshow('SCAnalyze', Gmeter)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
+
+framesToCloseSection=int(CoolDownPeriodInFrames)
+analyze_graph(testStage, TimeLine)
+if burnerStage < 3:
+	framesOfAcc = currentFrame-framesToCloseSection-referenceFrame
+	analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 
 cap.release()
 cv2.destroyAllWindows
