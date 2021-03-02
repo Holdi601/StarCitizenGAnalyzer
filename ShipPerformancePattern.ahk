@@ -301,6 +301,11 @@ while 2>1
 	Sleep 100
 	StartStopRecording()
 	Sleep 5000()
+	InputBox, ProcessIt, Processing, Press yes to start processing, , 420, 
+	if ErrorLevel
+	{
+		ExitApp
+	}
 	StartPythonScript(pythonAnalyzerLocation, Ship)
 }
 
