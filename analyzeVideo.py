@@ -77,6 +77,18 @@ def dts(dict):
 		for key in dict:
 			result=result+";"+str(key)+";"+str(dict[key])
 		return result[1:]
+	
+def cleanArray(arr):
+	result=[]
+	lastValue = arr[0]
+	result.append(lastValue)
+	for i in range(1, len(arr)):
+		if arr[i]<0:
+			result.append(lastValue)
+		else:
+			result.append(arr[i])
+		lastValue=arr[i]
+	return result
 		
 class BurnTimeGraph:
 	def __init__(self):
@@ -106,7 +118,69 @@ class BurnTimeGraph:
 		self.downright=[]
 		self.upleft=[]
 		self.upright=[]
+		
+	def getCleanObject(self):
+		Btresult = BurnTimeGraph()
+		Btresult.fwd = cleanArray(self.fwd)
+		Btresult.aft = cleanArray(self.aft)
+		Btresult.up = cleanArray(self.up)
+		Btresult.down = cleanArray(self.down)
+		Btresult.left = cleanArray(self.left)
+		Btresult.right = cleanArray(self.right)
+		Btresult.fwdup = cleanArray(self.fwdup)
+		Btresult.fwddown = cleanArray(self.fwddown)
+		Btresult.fwdleft = cleanArray(self.fwdleft)
+		Btresult.fwdright = cleanArray(self.fwdright)
+		Btresult.fwdupleft = cleanArray(self.fwdupleft)
+		Btresult.fwdupright = cleanArray(self.fwdupright)
+		Btresult.fwddownleft = cleanArray(self.fwddownleft)
+		Btresult.fwddownright = cleanArray(self.fwddownright)
+		Btresult.aftup = cleanArray(self.aftup)
+		Btresult.aftdown = cleanArray(self.aftdown)
+		Btresult.aftleft = cleanArray(self.aftleft)
+		Btresult.aftright = cleanArray(self.aftright)
+		Btresult.aftupleft = cleanArray(self.aftupleft)
+		Btresult.aftupright = cleanArray(self.aftupright)
+		Btresult.aftdownleft = cleanArray(self.aftdownleft)
+		Btresult.aftdownright = cleanArray(self.aftdownright)
+		Btresult.downleft = cleanArray(self.downleft)
+		Btresult.downright = cleanArray(self.downright)
+		Btresult.upleft = cleanArray(self.upleft)
+		Btresult.upright = cleanArray(self.upright)
+		return Btresult
 
+def writeArrayToFile( prefix, fileWriter, arr, dir1, dir2, dir3):
+	for i in range(0, len(arr)):
+			lineToWrite=prefix+","+dir1+","+dir2+","+dir3+","+str(i+1)+","+str(arr[i])+"\n"
+			fileWriter.write(lineToWrite)
+
+def writeTimeGraph(tg, prefix, filewriter):
+	writeArrayToFile(prefix, filewriter, tg.fwd, "fwd","none","none")
+	writeArrayToFile(prefix, filewriter, tg.aft, "aft","none","none")
+	writeArrayToFile(prefix, filewriter, tg.left, "none","none","left")
+	writeArrayToFile(prefix, filewriter, tg.right, "none","none","right")
+	writeArrayToFile(prefix, filewriter, tg.up, "none","up","none")
+	writeArrayToFile(prefix, filewriter, tg.down, "none","down","none")
+	writeArrayToFile(prefix, filewriter, tg.fwdup, "fwd","up","none")
+	writeArrayToFile(prefix, filewriter, tg.fwddown, "fwd","down","none")
+	writeArrayToFile(prefix, filewriter, tg.fwdleft, "fwd","none","left")
+	writeArrayToFile(prefix, filewriter, tg.fwdright, "fwd","none","right")
+	writeArrayToFile(prefix, filewriter, tg.fwdupleft, "fwd","up","left")
+	writeArrayToFile(prefix, filewriter, tg.fwdupright, "fwd","up","right")
+	writeArrayToFile(prefix, filewriter, tg.fwddownleft, "fwd","down","left")
+	writeArrayToFile(prefix, filewriter, tg.fwddownright, "fwd","down","right")
+	writeArrayToFile(prefix, filewriter, tg.aftup, "aft","up","none")
+	writeArrayToFile(prefix, filewriter, tg.aftdown, "aft","down","none")
+	writeArrayToFile(prefix, filewriter, tg.aftleft, "aft","none","left")
+	writeArrayToFile(prefix, filewriter, tg.aftright, "aft","none","right")
+	writeArrayToFile(prefix, filewriter, tg.aftupleft, "aft","up","left")
+	writeArrayToFile(prefix, filewriter, tg.aftupright, "aft","up","right")
+	writeArrayToFile(prefix, filewriter, tg.aftdownleft, "aft","down","left")
+	writeArrayToFile(prefix, filewriter, tg.aftdownright, "aft","down","right")
+	writeArrayToFile(prefix, filewriter, tg.downleft, "none","down","left")
+	writeArrayToFile(prefix, filewriter, tg.downright, "none","down","right")
+	writeArrayToFile(prefix, filewriter, tg.upleft, "none","up","left")
+	writeArrayToFile(prefix, filewriter, tg.upright, "none","up","right")
 
 class ShipResults:
 	def __init__(self):
@@ -144,84 +218,11 @@ class ShipResults:
 		outputFile.write(resultLine)
 		outputFile.close()
 		startPart=Manufacteur+","+Model+","+Comment+","+self.TestDate
-		for i in range(0, len(self.TimeGraph.fwd)):
-			lineToWrite=startPart+",fwd,"+str(i+1)+","+str(self.TimeGraph.fwd[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aft)):
-			lineToWrite=startPart+",aft,"+str(i+1)+","+str(self.TimeGraph.aft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.left)):
-			lineToWrite=startPart+",left,"+str(i+1)+","+str(self.TimeGraph.left[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.right)):
-			lineToWrite=startPart+",right,"+str(i+1)+","+str(self.TimeGraph.right[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.up)):
-			lineToWrite=startPart+",up,"+str(i+1)+","+str(self.TimeGraph.up[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.down)):
-			lineToWrite=startPart+",down,"+str(i+1)+","+str(self.TimeGraph.down[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwdup)):
-			lineToWrite=startPart+",fwdup,"+str(i+1)+","+str(self.TimeGraph.fwdup[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwddown)):
-			lineToWrite=startPart+",fwddown,"+str(i+1)+","+str(self.TimeGraph.fwddown[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwdleft)):
-			lineToWrite=startPart+",fwdleft,"+str(i+1)+","+str(self.TimeGraph.fwdleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwdright)):
-			lineToWrite=startPart+",fwdright,"+str(i+1)+","+str(self.TimeGraph.fwdright[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwdupleft)):
-			lineToWrite=startPart+",fwdupleft,"+str(i+1)+","+str(self.TimeGraph.fwdupleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwdupright)):
-			lineToWrite=startPart+",fwdupright,"+str(i+1)+","+str(self.TimeGraph.fwdupright[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwddownleft)):
-			lineToWrite=startPart+",fwddownleft,"+str(i+1)+","+str(self.TimeGraph.fwddownleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.fwddownright)):
-			lineToWrite=startPart+",fwddownright,"+str(i+1)+","+str(self.TimeGraph.fwddownright[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftup)):
-			lineToWrite=startPart+",aftup,"+str(i+1)+","+str(self.TimeGraph.aftup[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftdown)):
-			lineToWrite=startPart+",aftdown,"+str(i+1)+","+str(self.TimeGraph.aftdown[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftleft)):
-			lineToWrite=startPart+",aftleft,"+str(i+1)+","+str(self.TimeGraph.aftleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftright)):
-			lineToWrite=startPart+",aftright,"+str(i+1)+","+str(self.TimeGraph.aftright[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftupleft)):
-			lineToWrite=startPart+",aftupleft,"+str(i+1)+","+str(self.TimeGraph.aftupleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftupright)):
-			lineToWrite=startPart+",aftupright,"+str(i+1)+","+str(self.TimeGraph.aftupright[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftdownleft)):
-			lineToWrite=startPart+",aftdownleft,"+str(i+1)+","+str(self.TimeGraph.aftdownleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.aftdownright)):
-			lineToWrite=startPart+",aftdownright,"+str(i+1)+","+str(self.TimeGraph.aftdownright[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.downleft)):
-			lineToWrite=startPart+",downleft,"+str(i+1)+","+str(self.TimeGraph.downleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.downright)):
-			lineToWrite=startPart+",downright,"+str(i+1)+","+str(self.TimeGraph.downright[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.upleft)):
-			lineToWrite=startPart+",upleft,"+str(i+1)+","+str(self.TimeGraph.upleft[i])+"\n"
-			outputFileTL.write(lineToWrite)
-		for i in range(0, len(self.TimeGraph.upright)):
-			lineToWrite=startPart+",upright,"+str(i+1)+","+str(self.TimeGraph.upright[i])+"\n"
-			outputFileTL.write(lineToWrite)
+		buStartup=startPart
+		startPart=buStartup+",raw"
+		writeTimeGraph(startPart, outputFileTL, self.TimeGraph)
+		startPart=buStartup+",cleaned"
+		writeTimeGraph(startPart, outputFileTL, self.TimeGraph.getCleanObject())
 		outputFileTL.close()
 
 
@@ -805,7 +806,7 @@ while cap.isOpened():
 				framesToCloseSection=int(CoolDownPeriodInFrames)
 				analyze_graph(testStage, TimeLine)
 				if burnerStage < 3:
-					framesOfAcc = currentFrame-framesToCloseSection-referenceStartAcc
+					framesOfAcc = currentFrame-framesToCloseSection-referenceFrame
 					analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 			stats={}
 			burnerActive=False
