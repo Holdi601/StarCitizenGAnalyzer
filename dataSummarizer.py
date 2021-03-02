@@ -1,7 +1,7 @@
 import os
 import sys
 
-AppendSummary = True
+AppendSummary = False
 pathParts = sys.argv[0].split('\\') #Windows if you want it for linux do it yourself :P
 DataPath= pathParts[0]
 for i in range(1,len(pathParts)-1):
