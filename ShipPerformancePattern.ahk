@@ -265,15 +265,15 @@ StartStopRecording()
 	Sleep 100
 }
 
-StartPythonScript(scriptPath, Arg)
+StartPythonScript(scriptPath, Arg, Arg2)
 {
 	commands=
 		(join&
-		python "%scriptPath%" "%Arg%"`n
+		python "%scriptPath%" "%Arg%" "%Arg2%"`n
 		)
 	Run, cmd /c %commands%  
 }
-
+Short:= 1
 while 2>1
 {
 	InputBox, Ship, SCShip, Please enter a ship brand with ship name seperated by a minus, , 420, 150
@@ -285,6 +285,11 @@ while 2>1
 		Else
 			StartPythonScript(pythonDataSummarizer, Ship)
 	}
+	MSGBox, 4, , Press Yes for Short Analysis, no or Cancel for extensive testing? 
+		IfMsgBox, No 
+			Short:=-1
+		Else
+			Short:=1
 	Sleep 5000
 	Loop, 100
 	{
@@ -296,16 +301,19 @@ while 2>1
 	BasicAcceleration(0)
 	Sleep 1000
 	BasicAcceleration(1)
-	Sleep 10000
-	TimeToOverheat()
-	Sleep 100
-	StartStopRecording()
-	Sleep 5000()
+	if Short < 0
+	{
+		Sleep 10000
+		TimeToOverheat()
+		Sleep 100
+		StartStopRecording()
+		Sleep 5000()
+	}
 	InputBox, ProcessIt, Processing, Press yes to start processing, , 420, 
 	if ErrorLevel
 	{
 		ExitApp
 	}
-	StartPythonScript(pythonAnalyzerLocation, Ship)
+	StartPythonScript(pythonAnalyzerLocation, Ship, Short)
 }
 

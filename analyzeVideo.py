@@ -29,10 +29,16 @@ if not os.path.exists(DataOutput):
 VideoFilePath = 'Y:\\Records\\Squadron 42 - Star Citizen\\'
 LatestVideo = GetYoungestVideoInFoler(VideoFilePath)
 SpaceShip = 'Debug-Debug-Debug'
+Short = True
 if len(sys.argv)>1:
 	SpaceShip=sys.argv[1]
+	valShort = float(sys.argv[2])
+	if valShort < 0:
+		Short=False
+	else:
+		Short=True
 else:
-	SpaceShip="Aegis-Eclipse-NR_MC"
+	SpaceShip="Aegis-Gladius_Pirate-NR_MC"
 SpaceShip =  SpaceShip.replace(',','')
 videoProperties= get_video_properties(LatestVideo)
 HalfHeight = int(videoProperties['height']/2)
@@ -247,10 +253,11 @@ class ShipResults:
 		startPart=Manufacteur+","+Model+","+Comment+","+self.TestDate
 		buStartup=startPart
 		startPart=buStartup+",raw"
-		writeTimeGraph(startPart, outputFileTL, self.TimeGraph)
-		print("now clean")
-		startPart=buStartup+",cleaned"
-		writeTimeGraph(startPart, outputFileTL, self.TimeGraph.getCleanObject())
+		if not Short:
+			writeTimeGraph(startPart, outputFileTL, self.TimeGraph)
+			print("now clean")
+			startPart=buStartup+",cleaned"
+			writeTimeGraph(startPart, outputFileTL, self.TimeGraph.getCleanObject())
 		outputFileTL.close()
 
 
@@ -925,7 +932,7 @@ while cap.isOpened():
 			closed=True
 			burnerActive=False
 			BurnerStartRef =-1
-			if testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)):
+			if (testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)) and not Short) or (Short and testStage==testStageBurnThreshhold):
 				break
 		if testStage>testStageBurnThreshhold and burnerActive:
 			TimeLine.append(GreadOut)
@@ -964,7 +971,7 @@ while cap.isOpened():
 			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 			burnerStage+=1
 			print("Done in direction, waiting for external view")
-		if testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)) and burnerStage==3:
+		if (testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)) and burnerStage==3):
 			break
 		if Debug:
 			cv2.imshow('SCAnalyze', Gmeter)

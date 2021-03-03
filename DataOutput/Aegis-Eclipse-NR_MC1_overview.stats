@@ -1,4 +1,3 @@
-Manufacteur,Ship,Comment,DateOfTest,NormAcc,BurnAcc,BurnTime,CoolTime,HeatedBurnTime,thrust_dir_1,thrust_dir_2,thrust_dir_3
 Aegis,Eclipse,NR_MC,2021-03-02,5.2,10.4,10066.63352779093,3699.9878198171955,2599.991440952624,fwd,none,none
 Aegis,Eclipse,NR_MC,2021-03-02,3.7,7.4,7249.976133425586,4216.652785647525,2233.3259813311,aft,none,none
 Aegis,Eclipse,NR_MC,2021-03-02,2.5,5.1,11633.295037082895,883.330425451853,3566.654925409369,none,none,left
