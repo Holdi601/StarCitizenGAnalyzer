@@ -70,10 +70,6 @@ class Direction:
 		self.downright=-1.0
 		self.upleft=-1.0
 		self.upright=-1.0
-		
-	def toCsvString(self):
-		result=str(self.fwd)+","+str(self.aft)+","+str(self.left)+","+str(self.right)+","+str(self.up)+","+str(self.down)+","+str(self.fwdup)+","+str(self.fwddown)+","+str(self.fwdleft)+","+str(self.fwdright)+","+str(self.fwdupleft)+","+str(self.fwdupright)+","+str(self.fwddownleft)+","+str(self.fwddownright)+","+str(self.aftup)+","+str(self.aftdown)+","+str(self.aftleft)+","+str(self.aftright)+","+str(self.aftupleft)+","+str(self.aftupright)+","+str(self.aftdownleft)+","+str(self.aftdownright)+","+str(self.downleft)+","+str(self.downright)+","+str(self.upleft)+","+str(self.upright)
-		return result
 
 def dts(dict):
 		result=""
@@ -157,6 +153,33 @@ def writeArrayToFile( prefix, fileWriter, arr, dir1, dir2, dir3):
 			lineToWrite=prefix+","+dir1+","+dir2+","+dir3+","+str(i+1)+","+str(arr[i])+"\n"
 			fileWriter.write(lineToWrite)
 
+def writeShipResults(prefix, filewriter, NormAcc, BurnAcc, BurnTime, CDTime, HBTime):
+	filewriter.write(prefix+","+str(NormAcc.fwd)			+str(BurnAcc.fwd)			+str(BurnTime.fwd)			+str(CDTime.fwd)			+str(HBTime.fwd)				+",fwd,none,none\n")
+	filewriter.write(prefix+","+str(NormAcc.aft)			+str(BurnAcc.aft)			+str(BurnTime.aft)			+str(CDTime.aft)			+str(HBTime.aft)				+",aft,none,none\n")
+	filewriter.write(prefix+","+str(NormAcc.left)			+str(BurnAcc.left)			+str(BurnTime.left)			+str(CDTime.left)			+str(HBTime.left)				+",none,none,left\n")
+	filewriter.write(prefix+","+str(NormAcc.right)			+str(BurnAcc.right)			+str(BurnTime.right)		+str(CDTime.right)			+str(HBTime.right)				+",none,none,right\n")
+	filewriter.write(prefix+","+str(NormAcc.up)				+str(BurnAcc.up)			+str(BurnTime.up)			+str(CDTime.up)				+str(HBTime.up)					+",none,up,none\n")
+	filewriter.write(prefix+","+str(NormAcc.down)			+str(BurnAcc.down)			+str(BurnTime.down)			+str(CDTime.down)			+str(HBTime.down)				+",none,down,none\n")
+	filewriter.write(prefix+","+str(NormAcc.fwdup)			+str(BurnAcc.fwdup)			+str(BurnTime.fwdup)		+str(CDTime.fwdup)			+str(HBTime.fwdup)				+",fwd,up,none\n")
+	filewriter.write(prefix+","+str(NormAcc.fwddown)		+str(BurnAcc.fwddown)		+str(BurnTime.fwddown)		+str(CDTime.fwddown)		+str(HBTime.fwddown)			+",fwd,down,none\n")
+	filewriter.write(prefix+","+str(NormAcc.fwdleft)		+str(BurnAcc.fwdleft)		+str(BurnTime.fwdleft)		+str(CDTime.fwdleft)		+str(HBTime.fwdleft)			+",fwd,none,left\n")
+	filewriter.write(prefix+","+str(NormAcc.fwdright)		+str(BurnAcc.fwdright)		+str(BurnTime.fwdright)		+str(CDTime.fwdright)		+str(HBTime.fwdright)			+",fwd,none,right\n")
+	filewriter.write(prefix+","+str(NormAcc.fwdupleft)		+str(BurnAcc.fwdupleft)		+str(BurnTime.fwdupleft)	+str(CDTime.fwdupleft)		+str(HBTime.fwdupleft)			+",fwd,up,left\n")
+	filewriter.write(prefix+","+str(NormAcc.fwdupright)		+str(BurnAcc.fwdupright)	+str(BurnTime.fwdupright)	+str(CDTime.fwdupright)		+str(HBTime.fwdupright)			+",fwd,up,right\n")
+	filewriter.write(prefix+","+str(NormAcc.fwddownleft)	+str(BurnAcc.fwddownleft)	+str(BurnTime.fwddownleft)	+str(CDTime.fwddownleft)	+str(HBTime.fwddownleft)		+",fwd,down,left\n")
+	filewriter.write(prefix+","+str(NormAcc.fwddownright)	+str(BurnAcc.fwddownright)	+str(BurnTime.fwddownright)	+str(CDTime.fwddownright)	+str(HBTime.fwddownright)		+",fwd,down,right\n")
+	filewriter.write(prefix+","+str(NormAcc.aftup)			+str(BurnAcc.aftup)			+str(BurnTime.aftup)		+str(CDTime.aftup)			+str(HBTime.aftup)				+",aft,up,none\n")
+	filewriter.write(prefix+","+str(NormAcc.aftdown)		+str(BurnAcc.aftdown)		+str(BurnTime.aftdown)		+str(CDTime.aftdown)		+str(HBTime.aftdown)			+",aft,down,none\n")
+	filewriter.write(prefix+","+str(NormAcc.aftleft)		+str(BurnAcc.aftleft)		+str(BurnTime.aftleft)		+str(CDTime.aftleft)		+str(HBTime.aftleft)			+",aft,none,left\n")
+	filewriter.write(prefix+","+str(NormAcc.aftright)		+str(BurnAcc.aftright)		+str(BurnTime.aftright)		+str(CDTime.aftright)		+str(HBTime.aftright)			+",aft,none,right\n")
+	filewriter.write(prefix+","+str(NormAcc.aftupleft)		+str(BurnAcc.aftupleft)		+str(BurnTime.aftupleft)	+str(CDTime.aftupleft)		+str(HBTime.aftupleft)			+",aft,up,left\n")
+	filewriter.write(prefix+","+str(NormAcc.aftupright)		+str(BurnAcc.aftupright)	+str(BurnTime.aftupright)	+str(CDTime.aftupright)		+str(HBTime.aftupright)			+",aft,up,right\n")
+	filewriter.write(prefix+","+str(NormAcc.aftdownleft)	+str(BurnAcc.aftdownleft)	+str(BurnTime.aftdownleft)	+str(CDTime.aftdownleft)	+str(HBTime.aftdownleft)		+",aft,down,left\n")
+	filewriter.write(prefix+","+str(NormAcc.aftdownright)	+str(BurnAcc.aftdownright)	+str(BurnTime.aftdownright)	+str(CDTime.aftdownright)	+str(HBTime.aftdownright)		+",aft,down,right\n")
+	filewriter.write(prefix+","+str(NormAcc.downleft)		+str(BurnAcc.downleft)		+str(BurnTime.downleft)		+str(CDTime.downleft)		+str(HBTime.downleft)			+",none,down,left\n")
+	filewriter.write(prefix+","+str(NormAcc.downright)		+str(BurnAcc.downright)		+str(BurnTime.downright)	+str(CDTime.downright)		+str(HBTime.downright)			+",none,down,right\n")
+	filewriter.write(prefix+","+str(NormAcc.upleft)			+str(BurnAcc.upleft)		+str(BurnTime.upleft)		+str(CDTime.upleft)			+str(HBTime.upleft)				+",none,up,left\n")
+	filewriter.write(prefix+","+str(NormAcc.upright)		+str(BurnAcc.upright)		+str(BurnTime.upright)		+str(CDTime.upright)		+str(HBTime.upright)			+",none,up,right\n")
 
 def writeTimeGraph(prefix, filewriter, tg):
 	writeArrayToFile(prefix, filewriter, tg.fwd, "fwd","none","none")
@@ -218,8 +241,8 @@ class ShipResults:
 				Model=parts[1]
 				if len(parts)>2:
 					Comment=parts[2]
-		resultLine=Manufacteur+","+Model+","+Comment+","+self.TestDate+","+self.NormalAcceleration.toCsvString()+","+self.BurnerAcceleration.toCsvString()+","+self.BurnTime.toCsvString()+","+self.CoolTime.toCsvString()+","+self.HeatedBurnTime.toCsvString()+"\n"
-		outputFile.write(resultLine)
+		pre=Manufacteur+","+Model+","+Comment+","+self.TestDate
+		writeShipResults(pre, outputFile, self.NormalAcceleration, self.BurnerAcceleration, self.BurnTime, self.CoolTime, self.HeatedBurnTime)
 		outputFile.close()
 		startPart=Manufacteur+","+Model+","+Comment+","+self.TestDate
 		buStartup=startPart
