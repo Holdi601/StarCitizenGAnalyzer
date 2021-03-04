@@ -38,7 +38,7 @@ if len(sys.argv)>1:
 	else:
 		Short=True
 else:
-	SpaceShip="Aegis-Gladius_Pirate-NR_MC"
+	SpaceShip="Aegis-Hammerhead-NR_MC"
 SpaceShip =  SpaceShip.replace(',','')
 videoProperties= get_video_properties(LatestVideo)
 HalfHeight = int(videoProperties['height']/2)

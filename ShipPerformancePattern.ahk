@@ -59,7 +59,7 @@ DirectionTest(afterburner, key, key2, key3 )
 	Sleep 100
 	Send {V up}
 	Sleep 50
-	Sleep 4000
+	Sleep 10000
 	Send {F4 down}
 	Sleep 50
 	Send {F4 up}
@@ -283,7 +283,7 @@ while 2>1
 		IfMsgBox, No 
 			ExitApp
 		Else
-			StartPythonScript(pythonDataSummarizer, Ship)
+			StartPythonScript(pythonDataSummarizer, Ship, Short)
 	}
 	MSGBox, 4, , Press Yes for Short Analysis, no or Cancel for extensive testing? 
 		IfMsgBox, No 
@@ -304,11 +304,11 @@ while 2>1
 	if Short < 0
 	{
 		Sleep 10000
-		TimeToOverheat()
-		Sleep 100
-		StartStopRecording()
-		Sleep 5000()
+		TimeToOverheat()	
 	}
+	Sleep 100
+	StartStopRecording()
+	Sleep 5000()
 	InputBox, ProcessIt, Processing, Press yes to start processing, , 420, 
 	if ErrorLevel
 	{
