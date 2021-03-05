@@ -5,193 +5,193 @@ DirectionTest(afterburner, key, key2, key3 )
 {
 	ZoomIn()
 	Send {V down}
-	Sleep 100
+	Sleep 20
 	Send {V up}
-	Sleep 50
+	Sleep 17
 	; Send {Left down}
-	; Sleep 50
+	; Sleep 17
 	; Send {Up down}
-	; Sleep 50
+	; Sleep 17
 	if (afterburner>0)
 	{
 		Send {LShift down}
-		Sleep 50
+		Sleep 17
 	}
 	Send {%key% down}
-	Sleep 50
+	Sleep 17
 	if ( key2 <> "none")
 	{
 		Send {%key2% down}
-		Sleep 50
+		Sleep 17
 	}
 	if ( key3 <> "none")
 	{
 		Send {%key3% down}
-		Sleep 50
+		Sleep 17
 	}
-	Sleep 1000
+	Sleep 2000
 	Send {F4 down}
-	Sleep 50
+	Sleep 17
 	Send {F4 up}
-	Sleep 50
+	Sleep 17
 	if ( key3 <> "none")
 	{
 		Send {%key3% up}
-		Sleep 50
+		Sleep 17
 	}
 	if ( key2 <> "none")
 	{
 		Send {%key2% up}
-		Sleep 50
+		Sleep 17
 	}
 	Send {%key% up}
-	Sleep 50
+	Sleep 17
 	if(afterburner>0)
 	{
 		Send {LShift up}
-		Sleep 50
+		Sleep 17
 	}
 	; Send {Up up}
-	; Sleep 50
+	; Sleep 17
 	; Send {Left up}
-	; Sleep 50
+	; Sleep 17
 	Send {V down}
-	Sleep 100
+	Sleep 20
 	Send {V up}
-	Sleep 50
-	Sleep 10000
+	Sleep 17
+	Sleep 11000
 	Send {F4 down}
-	Sleep 50
+	Sleep 17
 	Send {F4 up}
 }
 
 ZoomIn()
 {
 	Send {LAlt down}
-	Sleep 50
+	Sleep 17
 	Loop, 100
 	{
 		Send {WheelUp}
-		Sleep 50
+		Sleep 17
 	}
 	Send {LAlt up}
-	Sleep 50
+	Sleep 17
 	
 }
 
 BasicAcceleration(aft)
 {
 	DirectionTest(aft, "w", "none", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "none", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "a", "none", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "d", "none", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "Space", "none", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "LCtrl", "none", "none")
-	Sleep 100
+	Sleep 20
 	
 	DirectionTest(aft, "w", "Space", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "w", "LCtrl", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "w", "a", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "w", "d", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "w", "Space", "a")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "w", "Space", "d")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "w", "LCtrl", "a")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "w", "LCtrl", "d")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "Space", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "LCtrl", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "a", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "d", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "Space", "a")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "Space", "d")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "LCtrl", "a")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "s", "LCtrl", "d")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "LCtrl", "a", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "LCtrl", "d", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "Space", "a", "none")
-	Sleep 100
+	Sleep 20
 	DirectionTest(aft, "Space", "d", "none")
-	Sleep 100
+	Sleep 20
 }
 
 TimeToOverheatOneDirection(key, key2, key3)
 {
 	ZoomIn()
 	Send {V down}
-	Sleep 100
+	Sleep 20
 	Send {V up}
-	Sleep 50
+	Sleep 17
 	; Send {Left down}
-	; Sleep 50
+	; Sleep 17
 	; Send {Up down}
-	; Sleep 50
+	; Sleep 17
 	Send {LShift down}
-	Sleep 50
+	Sleep 17
 	Send {%key% down}
-	Sleep 50
+	Sleep 17
 	if ( key2 <> "none")
 	{
 		Send {%key2% down}
-		Sleep 50
+		Sleep 17
 	}
 	if ( key3 <> "none")
 	{
 		Send {%key3% down}
-		Sleep 50
+		Sleep 17
 	}
 	Sleep 30000
 	if ( key3 <> "none")
 	{
 		Send {%key3% up}
-		Sleep 50
+		Sleep 17
 	}
 	if ( key2 <> "none")
 	{
 		Send {%key2% up}
-		Sleep 50
+		Sleep 17
 	}
 	Send {F4 down}
-	Sleep 50
+	Sleep 17
 	Send {F4 up}
-	Sleep 50
+	Sleep 17
 	Send {%key% up}
-	Sleep 50
+	Sleep 17
 	Send {LShift up}
-	Sleep 50
+	Sleep 17
 	Send {Up up}
-	Sleep 50
+	Sleep 17
 	Send {Left up}
-	Sleep 50
+	Sleep 17
 	Send {V down}
-	Sleep 100
+	Sleep 20
 	Send {V up}
-	Sleep 10000
+	Sleep 2000
 	Send {F4 down}
-	Sleep 50
+	Sleep 17
 	Send {F4 up}
-	Sleep 50	
+	Sleep 17	
 }
 
 TimeToOverheat()
@@ -254,15 +254,15 @@ TimeToOverheat()
 
 StartStopRecording()
 {
-	Sleep 100
+	Sleep 20
 	Send {LAlt down}
-	Sleep 50
+	Sleep 17
 	Send {F9 down}
-	Sleep 100
+	Sleep 20
 	Send {F9 up}
-	Sleep 50
+	Sleep 17
 	Send {LAlt up}
-	Sleep 100
+	Sleep 20
 }
 
 StartPythonScript(scriptPath, Arg, Arg2)
@@ -290,25 +290,25 @@ while 2>1
 			Short:=-1
 		Else
 			Short:=1
-	Sleep 5000
+	Sleep 1700
 	Loop, 100
 	{
 		Send {WheelUp}
-		Sleep 50
+		Sleep 17
 	}
 	StartStopRecording()
-	Sleep 500
+	Sleep 170
 	BasicAcceleration(0)
-	Sleep 1000
+	Sleep 200
 	BasicAcceleration(1)
 	if Short < 0
 	{
-		Sleep 10000
+		Sleep 2000
 		TimeToOverheat()	
 	}
-	Sleep 100
+	Sleep 20
 	StartStopRecording()
-	Sleep 5000()
+	Sleep 1700()
 	InputBox, ProcessIt, Processing, Press yes to start processing, , 420, 
 	if ErrorLevel
 	{
