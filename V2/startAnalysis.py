@@ -3,22 +3,19 @@ import cv2
 import ctypes
 import os
 import glob
-from videoprops import get_video_properties
 import re
 import platform
-from datetime import datetime
+from datetime import date
 from easyocr import Reader
 import statistics
+import ctypes
+import time
 
 Debug=True
+user32 = ctypes.windll.user32
 def Mbox(title, text, style):
 	return ctypes.windll.user32.MessageBoxW(0, text, title, style)
 
-def GetYoungestVideoInFoler(path):
-	files = os.listdir(path)
-	paths = [os.path.join(path, basename) for basename in files]
-	return max(paths, key=os.path.getctime)
-	
 pathParts = sys.argv[0].split('\\') #Windows if you want it for linux do it yourself :P
 DataOutput= pathParts[0]
 for i in range(1,len(pathParts)-1):
@@ -26,8 +23,7 @@ for i in range(1,len(pathParts)-1):
 DataOutput = DataOutput+'\\DataOutput\\'
 if not os.path.exists(DataOutput):
 	os.makedirs(DataOutput) 
-VideoFilePath = 'Y:\\Records\\Squadron 42 - Star Citizen\\'
-LatestVideo = GetYoungestVideoInFoler(VideoFilePath)
+
 SpaceShip = 'Debug-Debug-Debug'
 Short = True
 if len(sys.argv)>1:
@@ -40,13 +36,12 @@ if len(sys.argv)>1:
 else:
 	SpaceShip="Aegis-Vanguard_Sentinel-NR_MC"
 SpaceShip =  SpaceShip.replace(',','')
-videoProperties= get_video_properties(LatestVideo)
-HalfHeight = int(videoProperties['height']/2)
-HalfWidth = int(videoProperties['width']/2)
-FPS_str = videoProperties['avg_frame_rate'].split('/')
-TPF = (1.0/(float(FPS_str[0])/float(FPS_str[1])))*1000
-ts = int(os.path.getmtime(LatestVideo))
-testDate = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
+
+
+HalfHeight = int(user32.GetSystemMetrics(1)/2)
+HalfWidth = int(user32.GetSystemMetrics(0)/2)
+print(HalfHeight)
+print(HalfWidth)
 
 class Direction:
 	def __init__(self):
@@ -95,69 +90,8 @@ def cleanArray(arr):
 		lastValue=arr[i]
 	return result
 		
-class BurnTimeGraph:
-	def __init__(self):
-		self.fwd=[]
-		self.aft=[]
-		self.up=[]
-		self.down=[]
-		self.left=[]
-		self.right=[]
-		self.fwdup=[]
-		self.fwddown=[]
-		self.fwdleft=[]
-		self.fwdright=[]
-		self.fwdupleft=[]
-		self.fwdupright=[]
-		self.fwddownleft=[]
-		self.fwddownright=[]
-		self.aftup=[]
-		self.aftdown=[]
-		self.aftleft=[]
-		self.aftright=[]
-		self.aftupleft=[]
-		self.aftupright=[]
-		self.aftdownleft=[]
-		self.aftdownright=[]
-		self.downleft=[]
-		self.downright=[]
-		self.upleft=[]
-		self.upright=[]
-		
-	def getCleanObject(self):
-		Btresult = BurnTimeGraph()
-		Btresult.fwd = cleanArray(self.fwd)
-		Btresult.aft = cleanArray(self.aft)
-		Btresult.up = cleanArray(self.up)
-		Btresult.down = cleanArray(self.down)
-		Btresult.left = cleanArray(self.left)
-		Btresult.right = cleanArray(self.right)
-		Btresult.fwdup = cleanArray(self.fwdup)
-		Btresult.fwddown = cleanArray(self.fwddown)
-		Btresult.fwdleft = cleanArray(self.fwdleft)
-		Btresult.fwdright = cleanArray(self.fwdright)
-		Btresult.fwdupleft = cleanArray(self.fwdupleft)
-		Btresult.fwdupright = cleanArray(self.fwdupright)
-		Btresult.fwddownleft = cleanArray(self.fwddownleft)
-		Btresult.fwddownright = cleanArray(self.fwddownright)
-		Btresult.aftup = cleanArray(self.aftup)
-		Btresult.aftdown = cleanArray(self.aftdown)
-		Btresult.aftleft = cleanArray(self.aftleft)
-		Btresult.aftright = cleanArray(self.aftright)
-		Btresult.aftupleft = cleanArray(self.aftupleft)
-		Btresult.aftupright = cleanArray(self.aftupright)
-		Btresult.aftdownleft = cleanArray(self.aftdownleft)
-		Btresult.aftdownright = cleanArray(self.aftdownright)
-		Btresult.downleft = cleanArray(self.downleft)
-		Btresult.downright = cleanArray(self.downright)
-		Btresult.upleft = cleanArray(self.upleft)
-		Btresult.upright = cleanArray(self.upright)
-		return Btresult
 
-def writeArrayToFile( prefix, fileWriter, arr, dir1, dir2, dir3):
-	for i in range(0, len(arr)):
-			lineToWrite=prefix+","+dir1+","+dir2+","+dir3+","+str(i+1)+","+str(arr[i])+"\n"
-			fileWriter.write(lineToWrite)
+
 
 def writeShipResults(prefix, filewriter, NormAcc, BurnAcc, BurnTime, CDTime, HBTime):
 	filewriter.write(prefix+","+str(NormAcc.fwd)			+","+str(BurnAcc.fwd)			+","+str(BurnTime.fwd)			+","+str(CDTime.fwd)			+","+str(HBTime.fwd)				+",fwd,none,none\n")
@@ -187,33 +121,7 @@ def writeShipResults(prefix, filewriter, NormAcc, BurnAcc, BurnTime, CDTime, HBT
 	filewriter.write(prefix+","+str(NormAcc.upleft)			+","+str(BurnAcc.upleft)		+","+str(BurnTime.upleft)		+","+str(CDTime.upleft)			+","+str(HBTime.upleft)				+",none,up,left\n")
 	filewriter.write(prefix+","+str(NormAcc.upright)		+","+str(BurnAcc.upright)		+","+str(BurnTime.upright)		+","+str(CDTime.upright)		+","+str(HBTime.upright)			+",none,up,right\n")
 
-def writeTimeGraph(prefix, filewriter, tg):
-	writeArrayToFile(prefix, filewriter, tg.fwd, "fwd","none","none")
-	writeArrayToFile(prefix, filewriter, tg.aft, "aft","none","none")
-	writeArrayToFile(prefix, filewriter, tg.left, "none","none","left")
-	writeArrayToFile(prefix, filewriter, tg.right, "none","none","right")
-	writeArrayToFile(prefix, filewriter, tg.up, "none","up","none")
-	writeArrayToFile(prefix, filewriter, tg.down, "none","down","none")
-	writeArrayToFile(prefix, filewriter, tg.fwdup, "fwd","up","none")
-	writeArrayToFile(prefix, filewriter, tg.fwddown, "fwd","down","none")
-	writeArrayToFile(prefix, filewriter, tg.fwdleft, "fwd","none","left")
-	writeArrayToFile(prefix, filewriter, tg.fwdright, "fwd","none","right")
-	writeArrayToFile(prefix, filewriter, tg.fwdupleft, "fwd","up","left")
-	writeArrayToFile(prefix, filewriter, tg.fwdupright, "fwd","up","right")
-	writeArrayToFile(prefix, filewriter, tg.fwddownleft, "fwd","down","left")
-	writeArrayToFile(prefix, filewriter, tg.fwddownright, "fwd","down","right")
-	writeArrayToFile(prefix, filewriter, tg.aftup, "aft","up","none")
-	writeArrayToFile(prefix, filewriter, tg.aftdown, "aft","down","none")
-	writeArrayToFile(prefix, filewriter, tg.aftleft, "aft","none","left")
-	writeArrayToFile(prefix, filewriter, tg.aftright, "aft","none","right")
-	writeArrayToFile(prefix, filewriter, tg.aftupleft, "aft","up","left")
-	writeArrayToFile(prefix, filewriter, tg.aftupright, "aft","up","right")
-	writeArrayToFile(prefix, filewriter, tg.aftdownleft, "aft","down","left")
-	writeArrayToFile(prefix, filewriter, tg.aftdownright, "aft","down","right")
-	writeArrayToFile(prefix, filewriter, tg.downleft, "none","down","left")
-	writeArrayToFile(prefix, filewriter, tg.downright, "none","down","right")
-	writeArrayToFile(prefix, filewriter, tg.upleft, "none","up","left")
-	writeArrayToFile(prefix, filewriter, tg.upright, "none","up","right")
+
 
 class ShipResults:
 	def __init__(self):
@@ -222,7 +130,6 @@ class ShipResults:
 		self.BurnTime = Direction()
 		self.CoolTime = Direction()
 		self.HeatedBurnTime = Direction()
-		self.TimeGraph = BurnTimeGraph()
 		self.TestDate=""
 		self.Name=""
 		
@@ -340,8 +247,6 @@ def ShipWriteUnitTest():
 
 #ShipWriteUnitTest()
 
-
-
 def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 	dimensionToDealWith=0
 	if HoW =="h":
@@ -355,16 +260,16 @@ def TranslatePercentageOffCenterToPixel(Percentage, HoW):
 	else:
 		return int(float(dimensionToDealWith)*float(Percentage/100.0))
 
-gYper = 11
-YwidPer = 52
-gYpix = HalfHeight+TranslatePercentageOffCenterToPixel(gYper,'h')
+gYper = 25
+YwidPer = 50
+gYpix = HalfHeight-TranslatePercentageOffCenterToPixel(gYper,'h')
 gYoff = gYpix+TranslatePercentageOffCenterToPixel(YwidPer,'h')
-gXper = 50
-XwidPer = 28
+gXper = 25
+XwidPer = 50
 gXpix = HalfWidth-TranslatePercentageOffCenterToPixel(gXper,'w')
 gXoff = gXpix+TranslatePercentageOffCenterToPixel(XwidPer,'w')
 
-cap= cv2.VideoCapture(LatestVideo)
+cap= cv2.VideoCapture(0)
 testStage = 1
 failuresInRow = 0
 succesesInRow = 0
@@ -373,24 +278,10 @@ AccsInRow =0
 frameCounter = 0
 results = ShipResults()
 results.Name = SpaceShip
-results.TestDate=testDate
+today = date.today()
+results.TestDate=today.strftime("%Y-%m-%d")
 stats = {}
 currentFrame=0
-referenceFrame =-1
-referenceTestFrame = -1
-referenceStartAcc= -1
-referenceNoAcc = -1
-lastLegitFrame =-1
-lastFrameAbove =-1
-framesToCloseSection=55
-framesToStartSection=15
-framesToDeclareNoAcc=6
-framesToDeclareAcc=12
-CoolDownPeriodInSeconds=9
-CoolDownPeriodInFrames=(1000/TPF)*CoolDownPeriodInSeconds
-burnerStage=0
-accelerationToBeAbove=0.0
-TimeLine=[]
 
 def get_most_appearing_val(stats):
 	returnVal = -1.0
@@ -401,245 +292,7 @@ def get_most_appearing_val(stats):
 			returnVal=val
 	return returnVal
 	
-def analyze_graph(section, graph):
-	if section==testStageBurnThreshhold+1:
-		results.TimeGraph.fwd = graph
-	elif section==testStageBurnThreshhold+2:
-		results.TimeGraph.aft = graph
-	elif section==testStageBurnThreshhold+3:
-		results.TimeGraph.left = graph
-	elif section==testStageBurnThreshhold+4:
-		results.TimeGraph.right = graph
-	elif section==testStageBurnThreshhold+5:
-		results.TimeGraph.up = graph
-	elif section==testStageBurnThreshhold+6:
-		results.TimeGraph.down = graph
-	elif section==testStageBurnThreshhold+7:
-		results.TimeGraph.fwdup = graph
-	elif section==testStageBurnThreshhold+8:
-		results.TimeGraph.fwddown = graph
-	elif section==testStageBurnThreshhold+9:
-		results.TimeGraph.fwdleft = graph
-	elif section==testStageBurnThreshhold+10:
-		results.TimeGraph.fwdright = graph
-	elif section==testStageBurnThreshhold+11:
-		results.TimeGraph.fwdupleft = graph
-	elif section==testStageBurnThreshhold+12:
-		results.TimeGraph.fwdupright = graph
-	elif section==testStageBurnThreshhold+13:
-		results.TimeGraph.fwddownleft = graph
-	elif section==testStageBurnThreshhold+14:
-		results.TimeGraph.fwddownright = graph
-	elif section==testStageBurnThreshhold+15:
-		results.TimeGraph.aftup = graph
-	elif section==testStageBurnThreshhold+16:
-		results.TimeGraph.aftdown = graph
-	elif section==testStageBurnThreshhold+17:
-		results.TimeGraph.aftleft = graph
-	elif section==testStageBurnThreshhold+18:
-		results.TimeGraph.aftright = graph
-	elif section==testStageBurnThreshhold+19:
-		results.TimeGraph.aftupleft = graph
-	elif section==testStageBurnThreshhold+20:
-		results.TimeGraph.aftupright = graph
-	elif section==testStageBurnThreshhold+21:
-		results.TimeGraph.aftdownleft = graph
-	elif section==testStageBurnThreshhold+22:
-		results.TimeGraph.aftdownright = graph
-	elif section==testStageBurnThreshhold+23:
-		results.TimeGraph.downleft = graph
-	elif section==testStageBurnThreshhold+24:
-		results.TimeGraph.downright = graph
-	elif section==testStageBurnThreshhold+25:
-		results.TimeGraph.upleft = graph
-	elif section==testStageBurnThreshhold+26:
-		results.TimeGraph.upright = graph
-	
 
-def analyze_results_from_time(section, burnstage, frames):
-	if section==testStageBurnThreshhold+1:
-		if burnerStage==0:
-			results.BurnTime.fwd=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwd=frames*TPF
-		else:
-			results.HeatedBurnTime.fwd=frames*TPF
-	elif section==testStageBurnThreshhold+2:
-		if burnerStage==0:
-			results.BurnTime.aft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aft=frames*TPF
-		else:
-			results.HeatedBurnTime.aft=frames*TPF
-	elif section==testStageBurnThreshhold+3:
-		if burnerStage==0:
-			results.BurnTime.left=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.left=frames*TPF
-		else:
-			results.HeatedBurnTime.left=frames*TPF
-	elif section==testStageBurnThreshhold+4:
-		if burnerStage==0:
-			results.BurnTime.right=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.right=frames*TPF
-		else:
-			results.HeatedBurnTime.right=frames*TPF
-	elif section==testStageBurnThreshhold+5:
-		if burnerStage==0:
-			results.BurnTime.up=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.up=frames*TPF
-		else:
-			results.HeatedBurnTime.up=frames*TPF
-	elif section==testStageBurnThreshhold+6:
-		if burnerStage==0:
-			results.BurnTime.down=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.down=frames*TPF
-		else:
-			results.HeatedBurnTime.down=frames*TPF
-	elif section==testStageBurnThreshhold+7:
-		if burnerStage==0:
-			results.BurnTime.fwdup=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwdup=frames*TPF
-		else:
-			results.HeatedBurnTime.fwdup=frames*TPF
-	elif section==testStageBurnThreshhold+8:
-		if burnerStage==0:
-			results.BurnTime.fwddown=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwddown=frames*TPF
-		else:
-			results.HeatedBurnTime.fwddown=frames*TPF
-	elif section==testStageBurnThreshhold+9:
-		if burnerStage==0:
-			results.BurnTime.fwdleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwdleft=frames*TPF
-		else:
-			results.HeatedBurnTime.fwdleft=frames*TPF
-	elif section==testStageBurnThreshhold+10:
-		if burnerStage==0:
-			results.BurnTime.fwdright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwdright=frames*TPF
-		else:
-			results.HeatedBurnTime.fwdright=frames*TPF
-	elif section==testStageBurnThreshhold+11:
-		if burnerStage==0:
-			results.BurnTime.fwdupleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwdupleft=frames*TPF
-		else:
-			results.HeatedBurnTime.fwdupleft=frames*TPF
-	elif section==testStageBurnThreshhold+12:
-		if burnerStage==0:
-			results.BurnTime.fwdupright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwdupright=frames*TPF
-		else:
-			results.HeatedBurnTime.fwdupright=frames*TPF
-	elif section==testStageBurnThreshhold+13:
-		if burnerStage==0:
-			results.BurnTime.fwddownleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwddownleft=frames*TPF
-		else:
-			results.HeatedBurnTime.fwddownleft=frames*TPF
-	elif section==testStageBurnThreshhold+14:
-		if burnerStage==0:
-			results.BurnTime.fwddownright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.fwddownright=frames*TPF
-		else:
-			results.HeatedBurnTime.fwddownright=frames*TPF
-	elif section==testStageBurnThreshhold+15:
-		if burnerStage==0:
-			results.BurnTime.aftup=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftup=frames*TPF
-		else:
-			results.HeatedBurnTime.aftup=frames*TPF
-	elif section==testStageBurnThreshhold+16:
-		if burnerStage==0:
-			results.BurnTime.aftdown=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftdown=frames*TPF
-		else:
-			results.HeatedBurnTime.aftdown=frames*TPF
-	elif section==testStageBurnThreshhold+17:
-		if burnerStage==0:
-			results.BurnTime.aftleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftleft=frames*TPF
-		else:
-			results.HeatedBurnTime.aftleft=frames*TPF
-	elif section==testStageBurnThreshhold+18:
-		if burnerStage==0:
-			results.BurnTime.aftright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftright=frames*TPF
-		else:
-			results.HeatedBurnTime.aftright=frames*TPF
-	elif section==testStageBurnThreshhold+19:
-		if burnerStage==0:
-			results.BurnTime.aftupleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftupleft=frames*TPF
-		else:
-			results.HeatedBurnTime.aftupleft=frames*TPF
-	elif section==testStageBurnThreshhold+20:
-		if burnerStage==0:
-			results.BurnTime.aftupright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftupright=frames*TPF
-		else:
-			results.HeatedBurnTime.aftupright=frames*TPF
-	elif section==testStageBurnThreshhold+21:
-		if burnerStage==0:
-			results.BurnTime.aftdownleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftdownleft=frames*TPF
-		else:
-			results.HeatedBurnTime.aftdownleft=frames*TPF
-	elif section==testStageBurnThreshhold+22:
-		if burnerStage==0:
-			results.BurnTime.aftdownright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.aftdownright=frames*TPF
-		else:
-			results.HeatedBurnTime.aftdownright=frames*TPF
-	elif section==testStageBurnThreshhold+23:
-		if burnerStage==0:
-			results.BurnTime.downleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.downleft=frames*TPF
-		else:
-			results.HeatedBurnTime.downleft=frames*TPF
-	elif section==testStageBurnThreshhold+24:
-		if burnerStage==0:
-			results.BurnTime.downright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.downright=frames*TPF
-		else:
-			results.HeatedBurnTime.downright=frames*TPF
-	elif section==testStageBurnThreshhold+25:
-		if burnerStage==0:
-			results.BurnTime.upleft=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.upleft=frames*TPF
-		else:
-			results.HeatedBurnTime.upleft=frames*TPF
-	elif section==testStageBurnThreshhold+26:
-		if burnerStage==0:
-			results.BurnTime.upright=frames*TPF
-		elif burnerStage==1:
-			results.CoolTime.upright=frames*TPF
-		else:
-			results.HeatedBurnTime.upright=frames*TPF
-	print(str(section)+" "+ str(burnerStage) +" finished with " + str(frames*TPF))
 
 def analyze_results_from_section_acceleration(section, stats):
 	if section==0:
@@ -801,41 +454,23 @@ def analyze_results_from_section_acceleration(section, stats):
 		results.BurnerAcceleration.upright=get_most_appearing_val(stats)
 		print("Burner Acceleration upright max Acceleration G detected: "+str(results.BurnerAcceleration.upright))
 
-def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
-	if brightness != 0:
-		if brightness > 0:
-			shadow = brightness
-			highlight = 255
-		else:
-			shadow = 0
-			highlight = 255 + brightness
-		alpha_b = (highlight - shadow)/255
-		gamma_b = shadow
-		buf = cv2.addWeighted(input_img, alpha_b, input_img, 0, gamma_b)
-	else:
-		buf = input_img.copy()
-	if contrast != 0:
-		f = 131*(contrast + 127)/(127*(131-contrast))
-		alpha_c = f
-		gamma_c = 127*(1-f)
-		buf = cv2.addWeighted(buf, alpha_c, buf, 0, gamma_c)
-	return buf
-closed=False
-started=False
+
 rdr = Reader(['en'],gpu=True)
-previousAcc=[]
-GreadsToSave=60
-burnerActive=False
-TrackerTimer =1.5
-TrackerFrame = int((1000/TPF)*TrackerTimer)
-FramesToScanTarget = 10
+
 xTracker = []
 yTracker = []
-BurnerTimeToleranceSeconds = 3
-BurnerPressPeriodInSeconds =30- BurnerTimeToleranceSeconds
-BurnerPressPeriodInFrames =(1000/TPF)*BurnerPressPeriodInSeconds
-BurnerStartRef = -1
-testStageBurnThreshhold=52
+
+gXref=35
+gXoff=63
+gYref=371
+gYoff=50
+oXHeat=gXref+233
+oXHoff=100
+oYHeat=gYref-265
+oYoff=50
+
+GEARdetect = False
+LOCKdetect = False
 
 def sample_size(stats):
 	result=0
@@ -844,145 +479,38 @@ def sample_size(stats):
 	return result
 
 while cap.isOpened():
+	st =  time.process_time()
 	currentFrame+=1
 	ret, frame = cap.read()
 	if frame is None:
 		break;
-	Gmeter=None
-	if currentFrame>= TrackerFrame - FramesToScanTarget:
-		if currentFrame>TrackerFrame:
-			Gmeter= frame[gYpix:gYoff, gXpix:gXoff]
-		else:
-			Gmeter=frame
-		#Gmeter=cv2.cvtColor(Gmeter, cv2.COLOR_BGR2GRAY)
-		#Gmeter=apply_brightness_contrast(Gmeter,0, 128)
-		txresults=[]
-		try:
-			txresults= rdr.readtext(Gmeter)
-		except:
-			print("Failed read screen " + str(currentFrame))
-		textFound=""
-		GreadOut=-1.0
-		if len(txresults)>0:
-			for elements in txresults:
-				if len(elements)>1:
-					textFound=elements[1]
-					if Debug:
-						cv2.putText(Gmeter,textFound, (int(elements[0][0][0]) , int(elements[0][0][1])), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
-					if currentFrame>TrackerFrame:
-						match = re.search("(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])*(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])[.](\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])", textFound)
-						if match:
-							strToUse = match[0].replace('o','0').replace('O','0').replace('g','9').replace('s','5').replace('S','5').replace('i','1').replace('I','1').replace('l','1')
-							GreadOut=float(strToUse)
-							break
-					if currentFrame >= TrackerFrame - FramesToScanTarget and currentFrame< TrackerFrame-1:
-						if textFound=="GEAR":
-							xTracker.append(elements[0][0][0])
-							yTracker.append(elements[0][0][1])
-					elif currentFrame == TrackerFrame-1:
-						xMed= statistics.median(xTracker)
-						yMed= statistics.median(yTracker)
-						gXpix = int(xMed - TranslatePercentageOffCenterToPixel(18, "w"))
-						gXoff = int(gXpix + TranslatePercentageOffCenterToPixel(17, "w"))
-						gYpix = int(yMed - TranslatePercentageOffCenterToPixel(17, "h"))
-						gYoff = int(gYpix + TranslatePercentageOffCenterToPixel(35, "h"))
-		if GreadOut<0:
-			failuresInRow+=1
-			noAccsInRow+=1
-			AccsInRow=0
-		else:
-			failuresInRow=0
-		if GreadOut>=0.0:
-			succesesInRow+=1
-			lastLegitFrame=currentFrame
-			previousAcc.insert(0, GreadOut)
-			if len(previousAcc)>GreadsToSave:
-				previousAcc.pop(GreadsToSave)
-			if GreadOut>0.0:
-				lastFrameAbove=currentFrame
-				noAccsInRow=0
-				AccsInRow+=1
-				if referenceStartAcc <0:
-					referenceStartAcc=currentFrame
-					print("Acceleration started")
-					if testStage>testStageBurnThreshhold and not burnerActive:
-						burnerActive=True
-				if GreadOut in stats:
-					stats[GreadOut]+=1
-				else:
-					stats[GreadOut]=1					
-			else:
-				noAccsInRow+=1
-				AccsInRow=0
-		elif failuresInRow==framesToCloseSection and not closed and sample_size(stats)>0 and (testStage<13 or currentFrame>(BurnerStartRef+BurnerPressPeriodInFrames)):
-			succesesInRow=0
-			print(str(testStage) + ' Section Closed Section Duration in Frames: '+ str(lastLegitFrame-referenceFrame))
-			print(stats)
-			if testStage<testStageBurnThreshhold+1:
-				analyze_results_from_section_acceleration(testStage, stats)
-			else:
-				framesToCloseSection=int(CoolDownPeriodInFrames)
-				analyze_graph(testStage, TimeLine)
-				if burnerStage < 3:
-					framesOfAcc = currentFrame-framesToCloseSection-referenceFrame
-					analyze_results_from_time(testStage, burnerStage, framesOfAcc)
-			stats={}
-			burnerActive=False
-			TimeLine=[]
-			closed=True
-			burnerActive=False
-			BurnerStartRef =-1
-			if (testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)) and not Short) or (Short and testStage==testStageBurnThreshhold):
-				break
-		if testStage>testStageBurnThreshhold and burnerActive:
-			TimeLine.append(GreadOut)
-		if succesesInRow==framesToStartSection and closed:
-			print('Section Started')
-			TimeLine=[]
-			for i in range(0, framesToStartSection):
-				TimeLine.insert(0, previousAcc[i])
-			closed=False
-			referenceFrame=currentFrame-(framesToStartSection-1)
-			testStage+=1
-			burnerStage=0
-			referenceStartAcc=-1
-			burnerActive=True
-			noAccsInRow=0
-			AccsInRow=0
-			referenceStartAcc=-1
-			referenceNoAcc=-1
-			stats={}	
-		if noAccsInRow== framesToDeclareNoAcc and testStage>testStageBurnThreshhold and referenceStartAcc>=0 and burnerStage==0:
-			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
-			BurnerStartRef = referenceStartAcc
-			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
-			referenceStartAcc=-1
-			burnerStage+=1
-			referenceNoAcc=currentFrame-framesToDeclareNoAcc
-			succesesInRow=-1
-		elif burnerStage==1 and  referenceNoAcc>0 and testStage>testStageBurnThreshhold and AccsInRow==framesToDeclareAcc:
-			framesOfCD=currentFrame-framesToDeclareAcc-referenceNoAcc
-			analyze_results_from_time(testStage, burnerStage, framesOfCD)
-			burnerStage+=1
-			referenceNoAcc=-1
-			referenceStartAcc=currentFrame-framesToDeclareAcc
-		elif burnerStage==2 and referenceStartAcc>0 and testStage>testStageBurnThreshhold and noAccsInRow== framesToDeclareNoAcc:
-			framesOfAcc = currentFrame-framesToDeclareNoAcc-referenceStartAcc
-			analyze_results_from_time(testStage, burnerStage, framesOfAcc)
-			burnerStage+=1
-			print("Done in direction, waiting for external view")
-		if (testStage==(testStageBurnThreshhold+(testStageBurnThreshhold/2)) and burnerStage==3):
-			break
-		if Debug:
-			cv2.imshow('SCAnalyze', Gmeter)
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			break
+	txresults=[]
+	Gmeter= frame[gYref:gYref+gYoff, gXref:gXref+gXoff]
+	oheat = frame[oYHeat:oYHeat+oYoff, oXHeat:oXHeat+oXHoff]
+	try:
+		txresults= rdr.readtext(Gmeter)
+	except:
+		print("Failed read screen " + str(currentFrame))
+	
+	
+	GreadOut=-1.0
+	if len(txresults)>0:
+		for elements in txresults:
+			if len(elements)>1:
+				textFound=elements[1]
+				match = re.search("(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])*(\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])[.](\d|[o]|[O]|[g]|[s]|[S]|[I]|[i]|[l])", textFound)
+				if match:
+					strToUse = match[0].replace('o','0').replace('O','0').replace('g','9').replace('s','5').replace('S','5').replace('i','1').replace('I','1').replace('l','1')
+					GreadOut=float(strToUse)
+					break
+	if Debug:
+		cv2.imshow('SCAnalyze', Gmeter)
+		cv2.imshow('Heated', oheat)
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+		break
+	nd =  time.process_time()
+	print(nd-st)
 
-framesToCloseSection=int(CoolDownPeriodInFrames)
-analyze_graph(testStage, TimeLine)
-if burnerStage < 3:
-	framesOfAcc = currentFrame-framesToCloseSection-referenceFrame
-	analyze_results_from_time(testStage, burnerStage, framesOfAcc)
 
 cap.release()
 cv2.destroyAllWindows
